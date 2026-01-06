@@ -1768,104 +1768,355 @@ html {
 }
 
 /* ============================================================
-   ELEGANT COMPACT MOBILE (IPHONE PREMIUM LOOK)
+   MASTER MOBILE FIX (IPHONE OPTIMIZED)
    Wklej to na sam dół style.css
 ============================================================ */
 
 @media (max-width: 768px) {
 
-    /* 1. SMUKLEJSZY NAGŁÓWEK (Compact Header) */
-    /* Zmniejszamy wysokość paska nawigacji */
-    .navbar { 
-        height: 60px !important; 
-        padding: 0 15px !important; /* Mniejsze marginesy boczne */
-    }
-    
-    /* Dopasowanie logo do mniejszego paska */
-    .brand img { height: 28px !important; } 
-    .brand { font-size: 1rem !important; }
-    
-    /* Dopasowanie ikony menu */
-    .mobile-menu-btn { font-size: 1.2rem !important; }
-
-    /* 2. POPRAWKA UKŁADU STRONY (Layout Fixes) */
-    /* Przesuwamy treść wyżej, bo pasek jest chudszy (36 baner + 60 navbar = 96) */
-    body { 
-        padding-top: 96px !important; 
+    /* 1. BLOKADA POZIOMEGO PRZEWIJANIA (Kluczowe na iPhone) */
+    html, body {
         overflow-x: hidden !important;
+        width: 100% !important;
+        position: relative;
     }
 
-    /* Mega Menu startuje niżej */
-    .mega-menu, .nav-links.active {
-        top: 96px !important;
-        height: calc(100vh - 96px) !important;
-    }
-
-    /* 3. MNIEJSZE, BARDZIEJ ELEGANCKIE NAGŁÓWKI */
-    h1, .hero-title {
-        font-size: 2rem !important; /* Było 2.5rem+ */
-        line-height: 1.1 !important;
-        margin-bottom: 15px !important;
-    }
-    
-    h2 {
-        font-size: 1.4rem !important; /* Zgrabniejszy nagłówek sekcji */
-        line-height: 1.2 !important;
-    }
-    
-    .hero-subtitle, p {
-        font-size: 0.9rem !important; /* Drobniejszy tekst */
-        line-height: 1.5 !important;
-    }
-
-    /* 4. ZGRABNE PRZYCISKI (Pastylki) */
-    .btn, .btn-primary, .btn-card, button {
-        padding: 10px 20px !important; /* Mniejsze wnętrze */
-        font-size: 0.8rem !important;  /* Mniejsza czcionka */
-        min-height: auto !important;   /* Usuwamy wymuszoną wysokość Apple */
-        border-radius: 8px !important; /* Lekko mniejsze zaokrąglenie */
-    }
-
-    /* 5. ODCHUDZONE KARTY (Compact Cards) */
-    .bento-card, .course-card, .social-card, .calculator-card {
-        padding: 20px !important; /* Mniej powietrza w środku */
-        border-radius: 16px !important; /* Mniejsze rogi */
-    }
-
-    /* Siatki w jednej kolumnie, ale ciaśniej */
-    .bento-grid, .courses-grid, .social-grid, .dash-stats-grid, .footer-content {
-        grid-template-columns: 1fr !important;
-        gap: 15px !important; /* Mniejsze odstępy między kartami */
+    /* 2. UKŁADANIE ELEMENTÓW W PIONIE (Stacking) */
+    /* Wszystkie siatki (Grid) zamieniamy na jedną kolumnę */
+    .bento-grid, 
+    .social-grid, 
+    .courses-grid, 
+    .dash-stats-grid,
+    .footer-content {
         display: grid !important;
+        grid-template-columns: 1fr !important; /* Jedna kolumna */
+        gap: 20px !important;
+        width: 100% !important;
     }
 
-    /* Resetowanie elementów rozciągniętych */
+    /* Elementy rozciągamy na szerokość ekranu */
+    .bento-card, .course-card, .social-card, .calculator-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Elementy, które były na 2 kolumny, teraz zajmują 1 (całą szerokość) */
     .col-span-2, .row-span-2 {
         grid-column: auto !important;
         grid-row: auto !important;
     }
 
-    /* 6. Dashboard (Wykres) - Skalowanie */
-    .hero-dashboard {
-        margin-top: 10px !important;
-        width: 100% !important;
-        transform: scale(0.95) !important; /* Lekkie pomniejszenie całości */
-        transform-origin: center top !important;
+    /* 3. DOSTOSOWANIE TEKSTU (Żeby nie był za wielki) */
+    h1, .hero-title {
+        font-size: 2.5rem !important; /* Mniejszy nagłówek */
+        line-height: 1.1 !important;
     }
     
-    /* Wyświetlacz licznika wewnątrz wykresu */
-    .stat-number { font-size: 1.4rem !important; }
-    .stat-label { font-size: 0.6rem !important; }
-
-    /* 7. MARGINESY I KONTENER */
-    .container { padding: 0 15px !important; } /* Więcej miejsca na treść */
-    .section { padding: 40px 0 !important; }   /* Mniejsze odstępy między sekcjami */
-
-    /* 8. MODALE (Okienka) */
-    .modal-content {
-        width: 95% !important;
-        padding: 20px !important;
-        max-height: 80vh !important;
+    h2 {
+        font-size: 1.8rem !important;
     }
-    .modal-header h2 { font-size: 1rem !important; } /* Mały nagłówek okienka */
+    
+    p, .hero-subtitle {
+        font-size: 1rem !important;
+        padding: 0 10px !important; /* Margines bezpieczeństwa dla tekstu */
+    }
+
+    /* 4. OPTYMALIZACJA DOTYKU (Touch Targets) */
+    /* Przyciski muszą być łatwe do kliknięcia palcem */
+    button, .btn, .nav-links a {
+        min-height: 44px !important; /* Standard Apple dla dotyku */
+        cursor: pointer !important;
+    }
+
+    /* 5. NAPRAWA MARGINESÓW (Padding) */
+    .container {
+        padding: 0 20px !important; /* Bezpieczny odstęp od krawędzi ekranu */
+    }
+    
+    .section {
+        padding: 60px 0 !important; /* Mniejsze odstępy między sekcjami */
+    }
+
+    /* 6. Dashboard (Ten wykres na górze) */
+    .hero-dashboard {
+        transform: none !important; /* Wyłącza pochylenie 3D na mobile */
+        margin-top: 20px !important;
+        width: 100% !important;
+    }
+    
+    /* 7. Poprawka menu mobilnego (Żeby było na wierzchu) */
+    .nav-links.active {
+        padding-top: 40px !important;
+        padding-bottom: 100px !important; /* Miejsce na pasek home iPhone'a */
+        overflow-y: auto !important; /* Pozwala przewijać menu jeśli jest długie */
+    }
+}
+
+
+@media (max-width: 768px) {
+    .navbar {
+        top: 36px !important;       /* Banner height */
+        height: 70px !important;    /* Mobile navbar height */
+        background: #050507 !important;
+    }
+
+    .nav-links.active {
+        position: fixed;
+        top: 106px !important;      /* 36px banner + 70px navbar */
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 106px);
+        background: rgba(5, 5, 7, 0.98) !important;
+        backdrop-filter: blur(25px);
+        padding: 40px 0 !important;
+        display: flex !important;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    /* Proper link sizing for touch */
+    .nav-links a {
+        min-height: 44px !important; /* Apple's touch standard */
+        font-size: 1.2rem !important;
+        padding: 12px 0 !important;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    position: relative;
+}
+
+.container {
+    padding: 0 clamp(16px, 4vw, 24px);
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Force all grids to single column */
+@media (max-width: 768px) {
+    .bento-grid,
+    .social-grid,
+    .courses-grid,
+    .dash-stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+    
+    .col-span-2,
+    .row-span-2 {
+        grid-column: auto !important;
+        grid-row: auto !important;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .dash-stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+    
+    .hero-dashboard {
+        transform: none !important; /* Remove 3D tilt on mobile */
+        max-width: 95%;
+        margin: 0 auto;
+    }
+    
+    .stat-number {
+        font-size: clamp(1.5rem, 4vw, 2rem) !important;
+    }
+}
+
+
+button, .btn, .nav-links a, .filter-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 12px 24px !important;
+}
+
+.mobile-menu-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90% !important;
+        max-width: 380px !important;
+        max-height: 85vh !important;
+        padding: 30px 20px !important;
+        overflow-y: auto !important;
+    }
+    
+    .modal-content h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .modal-body {
+        padding: 0 10px 20px 10px !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+
+
+@media (max-width: 768px) {
+    #subscription-hero {
+        transform: none !important;
+        padding: 20px !important;
+        margin: 0 10px 30px !important;
+    }
+    
+    #subscription-hero > div {
+        flex-direction: column !important;
+        text-align: center !important;
+    }
+    
+    #subscription-hero h2 {
+        font-size: 1.4rem !important;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .calculator-card {
+        padding: 30px 20px !important;
+    }
+    
+    .calc-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 30px !important;
+    }
+    
+    input[type=range] {
+        height: 30px; /* Larger touch area */
+    }
+    
+    .result-number {
+        font-size: 2.2rem !important;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .courses-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        padding: 0 10px;
+    }
+    
+    .course-card {
+        max-width: 100%;
+        margin: 0 !important;
+    }
+    
+    .card-footer {
+        flex-direction: column !important;
+        gap: 15px !important;
+        align-items: stretch !important;
+    }
+    
+    .btn-card {
+        width: 100% !important;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .mega-menu {
+        top: 106px !important;
+        left: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        border-radius: 0 0 20px 20px !important;
+        padding: 40px 15px 15px 15px !important;
+    }
+    
+    .mega-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    
+    .close-mega {
+        top: 8px !important;
+        right: 18px !important;
+        width: 34px !important;
+        height: 34px !important;
+        z-index: 10;
+    }
+}
+
+
+/* Fluid typography using clamp() */
+h1, .hero-title {
+    font-size: clamp(2.2rem, 8vw, 4.5rem) !important;
+}
+
+h2 {
+    font-size: clamp(1.8rem, 5vw, 3rem) !important;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem) !important;
+}
+
+p {
+    font-size: clamp(0.9rem, 2vw, 1rem) !important;
+}
+
+
+@media (max-width: 768px) {
+    .hero-dashboard {
+        transform: none !important; /* Remove 3D effects */
+    }
+    
+    .constellation-canvas {
+        display: none; /* Disable canvas animation on very small screens */
+    }
+}
+
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 106px; /* Accounts for fixed header */
+}
+
+[id] {
+    scroll-margin-top: 106px;
+}
+
+/* Prevent iOS zoom on focus */
+input, select, textarea {
+    font-size: 16px !important;
+}
+
+/* Fix sticky positioning */
+.navbar {
+    position: -webkit-sticky;
+    position: sticky;
+}
+
+/* Fix backdrop-filter */
+.modal-overlay {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+
+/* Fix viewport height on Android */
+.nav-links.active {
+    height: 100dvh; /* Dynamic viewport height */
+    height: calc(100vh - 106px); /* Fallback */
 }
