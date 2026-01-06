@@ -1768,88 +1768,104 @@ html {
 }
 
 /* ============================================================
-   MASTER MOBILE FIX (IPHONE OPTIMIZED)
+   ELEGANT COMPACT MOBILE (IPHONE PREMIUM LOOK)
    Wklej to na sam dół style.css
 ============================================================ */
 
 @media (max-width: 768px) {
 
-    /* 1. BLOKADA POZIOMEGO PRZEWIJANIA (Kluczowe na iPhone) */
-    html, body {
+    /* 1. SMUKLEJSZY NAGŁÓWEK (Compact Header) */
+    /* Zmniejszamy wysokość paska nawigacji */
+    .navbar { 
+        height: 60px !important; 
+        padding: 0 15px !important; /* Mniejsze marginesy boczne */
+    }
+    
+    /* Dopasowanie logo do mniejszego paska */
+    .brand img { height: 28px !important; } 
+    .brand { font-size: 1rem !important; }
+    
+    /* Dopasowanie ikony menu */
+    .mobile-menu-btn { font-size: 1.2rem !important; }
+
+    /* 2. POPRAWKA UKŁADU STRONY (Layout Fixes) */
+    /* Przesuwamy treść wyżej, bo pasek jest chudszy (36 baner + 60 navbar = 96) */
+    body { 
+        padding-top: 96px !important; 
         overflow-x: hidden !important;
-        width: 100% !important;
-        position: relative;
     }
 
-    /* 2. UKŁADANIE ELEMENTÓW W PIONIE (Stacking) */
-    /* Wszystkie siatki (Grid) zamieniamy na jedną kolumnę */
-    .bento-grid, 
-    .social-grid, 
-    .courses-grid, 
-    .dash-stats-grid,
-    .footer-content {
-        display: grid !important;
-        grid-template-columns: 1fr !important; /* Jedna kolumna */
-        gap: 20px !important;
-        width: 100% !important;
+    /* Mega Menu startuje niżej */
+    .mega-menu, .nav-links.active {
+        top: 96px !important;
+        height: calc(100vh - 96px) !important;
     }
 
-    /* Elementy rozciągamy na szerokość ekranu */
+    /* 3. MNIEJSZE, BARDZIEJ ELEGANCKIE NAGŁÓWKI */
+    h1, .hero-title {
+        font-size: 2rem !important; /* Było 2.5rem+ */
+        line-height: 1.1 !important;
+        margin-bottom: 15px !important;
+    }
+    
+    h2 {
+        font-size: 1.4rem !important; /* Zgrabniejszy nagłówek sekcji */
+        line-height: 1.2 !important;
+    }
+    
+    .hero-subtitle, p {
+        font-size: 0.9rem !important; /* Drobniejszy tekst */
+        line-height: 1.5 !important;
+    }
+
+    /* 4. ZGRABNE PRZYCISKI (Pastylki) */
+    .btn, .btn-primary, .btn-card, button {
+        padding: 10px 20px !important; /* Mniejsze wnętrze */
+        font-size: 0.8rem !important;  /* Mniejsza czcionka */
+        min-height: auto !important;   /* Usuwamy wymuszoną wysokość Apple */
+        border-radius: 8px !important; /* Lekko mniejsze zaokrąglenie */
+    }
+
+    /* 5. ODCHUDZONE KARTY (Compact Cards) */
     .bento-card, .course-card, .social-card, .calculator-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
+        padding: 20px !important; /* Mniej powietrza w środku */
+        border-radius: 16px !important; /* Mniejsze rogi */
     }
 
-    /* Elementy, które były na 2 kolumny, teraz zajmują 1 (całą szerokość) */
+    /* Siatki w jednej kolumnie, ale ciaśniej */
+    .bento-grid, .courses-grid, .social-grid, .dash-stats-grid, .footer-content {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important; /* Mniejsze odstępy między kartami */
+        display: grid !important;
+    }
+
+    /* Resetowanie elementów rozciągniętych */
     .col-span-2, .row-span-2 {
         grid-column: auto !important;
         grid-row: auto !important;
     }
 
-    /* 3. DOSTOSOWANIE TEKSTU (Żeby nie był za wielki) */
-    h1, .hero-title {
-        font-size: 2.5rem !important; /* Mniejszy nagłówek */
-        line-height: 1.1 !important;
-    }
-    
-    h2 {
-        font-size: 1.8rem !important;
-    }
-    
-    p, .hero-subtitle {
-        font-size: 1rem !important;
-        padding: 0 10px !important; /* Margines bezpieczeństwa dla tekstu */
-    }
-
-    /* 4. OPTYMALIZACJA DOTYKU (Touch Targets) */
-    /* Przyciski muszą być łatwe do kliknięcia palcem */
-    button, .btn, .nav-links a {
-        min-height: 44px !important; /* Standard Apple dla dotyku */
-        cursor: pointer !important;
-    }
-
-    /* 5. NAPRAWA MARGINESÓW (Padding) */
-    .container {
-        padding: 0 20px !important; /* Bezpieczny odstęp od krawędzi ekranu */
-    }
-    
-    .section {
-        padding: 60px 0 !important; /* Mniejsze odstępy między sekcjami */
-    }
-
-    /* 6. Dashboard (Ten wykres na górze) */
+    /* 6. Dashboard (Wykres) - Skalowanie */
     .hero-dashboard {
-        transform: none !important; /* Wyłącza pochylenie 3D na mobile */
-        margin-top: 20px !important;
+        margin-top: 10px !important;
         width: 100% !important;
+        transform: scale(0.95) !important; /* Lekkie pomniejszenie całości */
+        transform-origin: center top !important;
     }
     
-    /* 7. Poprawka menu mobilnego (Żeby było na wierzchu) */
-    .nav-links.active {
-        padding-top: 40px !important;
-        padding-bottom: 100px !important; /* Miejsce na pasek home iPhone'a */
-        overflow-y: auto !important; /* Pozwala przewijać menu jeśli jest długie */
+    /* Wyświetlacz licznika wewnątrz wykresu */
+    .stat-number { font-size: 1.4rem !important; }
+    .stat-label { font-size: 0.6rem !important; }
+
+    /* 7. MARGINESY I KONTENER */
+    .container { padding: 0 15px !important; } /* Więcej miejsca na treść */
+    .section { padding: 40px 0 !important; }   /* Mniejsze odstępy między sekcjami */
+
+    /* 8. MODALE (Okienka) */
+    .modal-content {
+        width: 95% !important;
+        padding: 20px !important;
+        max-height: 80vh !important;
     }
+    .modal-header h2 { font-size: 1rem !important; } /* Mały nagłówek okienka */
 }
