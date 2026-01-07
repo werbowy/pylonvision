@@ -200,56 +200,6 @@ html {
     scroll-behavior: smooth;
 }
 
-/* ========================================
-   ULTIMATE FOCUS MEGA MENU - PREMIUM GROWTH
-======================================== */
-/* Warstwa przyciemniająca tło (BEZ ZAMAZANIA) */
-.mega-blur-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.75); /* Solidne przyciemnienie */
-    z-index: 9998;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-.mega-blur-overlay.show {
-    display: block;
-    opacity: 1;
-}
-
-/* ========================================
-   ULTIMATE FOCUS MEGA MENU - EXTREME BLUR EDITION
-======================================== */
-
-/* 1. Warstwa tła - Odpowiada za ten mocny efekt rozmycia */
-.mega-blur-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    /* Lekko ciemniejsze tło, by kolory strony przebijały przez blur */
-    background: rgba(0, 0, 0, 0.4); 
-    
-    /* EKSTREMALNY BLUR (Większa wartość = mocniejszy efekt) */
-    backdrop-filter: blur(40px) saturate(150%); 
-    -webkit-backdrop-filter: blur(40px) saturate(150%);
-    
-    z-index: 9998;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.mega-blur-overlay.show {
-    display: block;
-    opacity: 1;
-}
 
 /* 2. Główne Mega Menu - Solidny, ostry popup na środku rozmycia */
 .mega-menu {
@@ -445,17 +395,40 @@ html {
            4. COMPONENTS
         ======================================== */
         .badge {
-            display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 100px;
-            font-size: 0.85rem; font-weight: 600; letter-spacing: 0.02em; background: var(--primary-dim);
-            border: 1px solid rgba(124, 58, 237, 0.3); color: #D8B4FE; margin-bottom: 24px; backdrop-filter: blur(10px);
+            display: inline-flex; 
+            align-items: center; 
+            gap: clamp(4px, 1vw, 8px); 
+            padding: clamp(4px, 1vw, 6px) clamp(12px, 2vw, 16px); 
+            border-radius: 100px;
+            font-size: clamp(0.75rem, 1.5vw + 0.1rem, 0.85rem); 
+            font-weight: 600; 
+            letter-spacing: 0.02em; 
+            background: var(--primary-dim);
+            border: 1px solid rgba(124, 58, 237, 0.3); 
+            color: #D8B4FE; 
+            margin-bottom: clamp(16px, 2vw, 24px); 
+            backdrop-filter: blur(10px);
             box-shadow: 0 0 20px rgba(124, 58, 237, 0.1);
+            white-space: nowrap;
         }
         .badge i { font-size: 0.7rem; color: #FBBF24; }
 
         .btn {
-            position: relative; display: inline-flex; align-items: center; justify-content: center;
-            padding: 16px 36px; border-radius: 100px; font-weight: 700; font-size: 1rem; overflow: hidden;
-            transition: all 0.3s var(--ease-smooth); gap: 10px; z-index: 1; text-decoration: none;
+            position: relative; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center;
+            padding: clamp(12px, 2vw, 16px) clamp(24px, 4vw, 36px); 
+            border-radius: 100px; 
+            font-weight: 700; 
+            font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem); 
+            overflow: hidden;
+            transition: all 0.3s var(--ease-smooth); 
+            gap: clamp(6px, 1vw, 10px); 
+            z-index: 1; 
+            text-decoration: none;
+            min-height: 44px;
+            white-space: nowrap;
         }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 30px rgba(124, 58, 237, 0.4); }
         .btn-primary::before {
@@ -509,20 +482,23 @@ html {
         }
 
         .banner-link strong { 
-            white-space: nowrap; 
+            white-space: nowrap;
+            font-size: clamp(0.7rem, 2vw + 0.1rem, 0.82rem);
+            display: inline-block;
         }
 
         .timer-box { 
             font-family: var(--font-code); 
             background: rgba(0,0,0,0.3); 
-            padding: 2px 8px; 
+            padding: clamp(2px, 0.5vw, 4px) clamp(6px, 1vw, 8px); 
             border-radius: 4px; 
             letter-spacing: 0.5px; 
             font-weight: 800; 
-            min-width: 80px; 
+            min-width: clamp(70px, 15vw, 80px); 
             flex-shrink: 0; 
             border: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.8rem;
+            font-size: clamp(0.7rem, 1.5vw + 0.1rem, 0.8rem);
+            white-space: nowrap;
         }
 
         .navbar {
@@ -624,55 +600,73 @@ html {
         .mobile-user-icon:hover { color: var(--text-main); }
         .mobile-menu-btn { font-size: 1.5rem; color: var(--text-main); }
 
-
         /* ========================================
            6. HERO SECTION
         ======================================== */
         .hero { position: relative; min-height: 100vh; padding-top: calc(var(--header-height) + 40px); display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden; }
         #constellation-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .hero-content { position: relative; z-index: 2; max-width: 900px; width: 100%; }
-        .hero-title { font-size: 4.5rem; line-height: 1.1; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 24px; }
-        .hero-subtitle { font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; line-height: 1.6; }
+        .hero-title { 
+            font-size: clamp(2rem, 8vw + 1rem, 4.5rem); 
+            line-height: 1.1; 
+            font-weight: 800; 
+            letter-spacing: -0.04em; 
+            margin-bottom: clamp(16px, 3vw, 24px);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .hero-subtitle { 
+            font-size: clamp(0.875rem, 2vw + 0.5rem, 1.25rem); 
+            color: var(--text-muted); 
+            max-width: 600px; 
+            margin: 0 auto clamp(24px, 4vw, 40px); 
+            line-height: 1.6;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
         .hero-code {
-            font-family: var(--font-code); font-size: 0.9rem; color: var(--accent); background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.2); padding: 8px 16px; border-radius: 8px; display: inline-block; margin-bottom: 30px;
+            font-family: var(--font-code); 
+            font-size: clamp(0.75rem, 1.5vw + 0.1rem, 0.9rem); 
+            color: var(--accent); 
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2); 
+            padding: clamp(6px, 1vw, 8px) clamp(12px, 2vw, 16px); 
+            border-radius: 8px; 
+            display: inline-block; 
+            margin-bottom: clamp(20px, 3vw, 30px);
+            word-wrap: break-word;
         }
         .cursor { animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         .hero-cta-group { display: flex; gap: 16px; justify-content: center; margin-bottom: 80px; }
         .hero-dashboard-wrapper { position: relative; perspective: 2000px; margin-bottom: -100px; z-index: 2; padding: 0 20px; }
         .hero-dashboard {
-            width: 100%; max-width: 1100px; margin: 0 auto; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(20, 20, 25, 0.8); backdrop-filter: blur(20px); padding: 12px;
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 50px 100px -20px rgba(124, 58, 237, 0.3);
-            transform: rotateX(15deg) scale(0.95); transition: transform 0.8s var(--ease-elastic);
+            width: 100%; 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            border-radius: 20px; 
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            background: #0a0a0f; 
+            padding: 0;
+            overflow: hidden;
+            text-align: left;
+            box-shadow: 0 50px 100px -20px rgba(124, 58, 237, 0.3);
+            transition: transform 0.8s var(--ease-elastic);
+            box-sizing: border-box;
+        }
+
+        /* 3D Perspective only for Desktop screens */
+        @media (min-width: 1025px) {
+            .hero-dashboard {
+                transform: rotateX(15deg) scale(0.95);
+            }
+            .hero-dashboard:hover {
+                transform: rotateX(5deg) scale(1);
+            }
         }
 
         /* --- RESPONSIVE DASHBOARD ENGINE (English Version) --- */
-.hero-dashboard {
-    background: #0a0a0f !important;
-    padding: 0 !important;
-    overflow: hidden;
-    text-align: left;
-    border: 1px solid rgba(124, 58, 237, 0.2);
-    border-radius: 20px;
-    /* Smooth scaling of the container */
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-    transition: transform 0.8s var(--ease-elastic);
-    box-sizing: border-box;
-}
-
-/* 3D Perspective only for Desktop screens */
-@media (min-width: 1025px) {
-    .hero-dashboard {
-        transform: rotateX(15deg) scale(0.95);
-    }
-    .hero-dashboard:hover {
-        transform: rotateX(5deg) scale(1);
-    }
-}
+        /* Consolidated with main .hero-dashboard rule below */
 
 .dash-nav { 
     background: #16161e; 
@@ -826,11 +820,46 @@ html {
         .card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
         .course-card:hover .card-image { transform: scale(1.05); }
         .card-content { padding: 24px 24px 20px 24px; display: flex; flex-direction: column; flex-grow: 1; }
-        .card-title { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; margin-bottom: 12px; color: white; letter-spacing: -0.02em; }
-        .card-desc { color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 20px; flex-grow: 1; }
+        .card-title { 
+            font-family: var(--font-display); 
+            font-size: clamp(1rem, 3vw + 0.25rem, 1.35rem); 
+            font-weight: 700; 
+            margin-bottom: clamp(8px, 1.5vw, 12px); 
+            color: white; 
+            letter-spacing: -0.02em;
+            word-wrap: break-word;
+            line-height: 1.3;
+        }
+        .card-desc { 
+            color: var(--text-muted); 
+            font-size: clamp(0.8rem, 1.5vw + 0.1rem, 0.85rem); 
+            line-height: 1.5; 
+            margin-bottom: clamp(12px, 2vw, 20px); 
+            flex-grow: 1;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
         .card-footer { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
-        .card-price { font-family: var(--font-code); font-size: 1.25rem; font-weight: 700; color: #A78BFA; }
-        .btn-card { padding: 12px 28px; background: linear-gradient(135deg, var(--primary), #A78BFA); color: white; border-radius: 100px; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); border: none; }
+        .card-price { 
+            font-family: var(--font-code); 
+            font-size: clamp(1rem, 2.5vw + 0.1rem, 1.25rem); 
+            font-weight: 700; 
+            color: #A78BFA;
+            word-wrap: break-word;
+        }
+        .btn-card { 
+            padding: clamp(10px, 1.5vw, 12px) clamp(20px, 3vw, 28px); 
+            background: linear-gradient(135deg, var(--primary), #A78BFA); 
+            color: white; 
+            border-radius: 100px; 
+            font-weight: 700; 
+            font-size: clamp(0.8rem, 1.5vw + 0.1rem, 0.9rem); 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); 
+            border: none;
+            min-height: 44px;
+            white-space: nowrap;
+        }
         .btn-card:hover { box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5); transform: translateY(-2px); }
 
         /* LIVE VIEWERS STYLES */
@@ -920,20 +949,7 @@ html {
         .proof-info div:last-child { font-size: 0.85rem; color: #9CA3AF; line-height: 1.3; display: flex; align-items: center; gap: 6px; }
 
 /* --- FINAL COMPACT DASHBOARD STYLES (English) --- */
-.hero-dashboard {
-    background: #0a0a0f !important;
-    padding: 0 !important;
-    overflow: hidden;
-    text-align: left;
-    border: 1px solid rgba(124, 58, 237, 0.2);
-    border-radius: 20px;
-    transform: rotateX(15deg) scale(0.95);
-    transition: transform 0.8s var(--ease-elastic);
-    box-shadow: 0 50px 100px -20px rgba(124, 58, 237, 0.3);
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-}
+/* Consolidated into main .hero-dashboard rule - removed duplicate */
 
 .dash-nav { background: #16161e; padding: 12px 20px; display: flex; align-items: center; border-bottom: 1px solid #222; }
 .dash-dots { display: flex; gap: 6px; margin-right: 20px; }
@@ -961,15 +977,16 @@ html {
 
 .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-.stat-number { 
-    font-size: clamp(1.5rem, 3vw, 2.2rem); 
-    font-weight: 800; 
-    color: #fff; 
-    font-family: var(--font-code); 
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.05em;
-}
+        .stat-number { 
+            font-size: clamp(1.25rem, 4vw + 0.25rem, 2.2rem); 
+            font-weight: 800; 
+            color: #fff; 
+            font-family: var(--font-code); 
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.05em;
+            word-wrap: break-word;
+        }
 
 .stat-chart { width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; margin-top: 15px; }
 
@@ -1051,14 +1068,16 @@ html {
         }
 
         .section-header h2 { 
-            font-size: 3rem; 
-            margin-bottom: 16px; 
-            letter-spacing: -0.02em; 
+            font-size: clamp(1.75rem, 5vw + 0.5rem, 3rem); 
+            margin-bottom: clamp(12px, 2vw, 16px); 
+            letter-spacing: -0.02em;
+            word-wrap: break-word;
         }
 
         .section-header p { 
-            font-size: 1.125rem; 
-            color: var(--text-muted); 
+            font-size: clamp(0.875rem, 2vw + 0.25rem, 1.125rem); 
+            color: var(--text-muted);
+            word-wrap: break-word;
         }
 
         .bento-grid { 
@@ -1134,13 +1153,17 @@ html {
         }
 
         .bento-content h3 { 
-            font-size: 1.5rem; 
-            margin-bottom: 12px; 
+            font-size: clamp(1.125rem, 3vw + 0.25rem, 1.5rem); 
+            margin-bottom: clamp(8px, 1.5vw, 12px);
+            word-wrap: break-word;
+            line-height: 1.3;
         }
 
         .bento-content p { 
             color: var(--text-muted); 
-            font-size: 1rem; 
+            font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem);
+            word-wrap: break-word;
+            line-height: 1.6;
         }
 
         .card-dark { 
@@ -1172,10 +1195,22 @@ html {
         input[type=range] { width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--primary); border: 2px solid white; cursor: pointer; margin-top: -10px; box-shadow: 0 0 10px rgba(124, 58, 237, 0.5); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #333; border-radius: 2px; }
-        .calc-value { font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 30px; }
+        .calc-value { 
+            font-size: clamp(1.25rem, 3vw + 0.25rem, 1.5rem); 
+            font-weight: 700; 
+            color: var(--text-main); 
+            margin-bottom: clamp(20px, 3vw, 30px);
+            word-wrap: break-word;
+        }
         .result-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 40px; border-radius: 20px; text-align: center; }
         .result-title { font-size: 1rem; color: #9CA3AF; margin-bottom: 10px; }
-        .result-number { font-size: 3.5rem; font-weight: 800; color: var(--accent); line-height: 1; }
+        .result-number { 
+            font-size: clamp(2rem, 6vw + 0.5rem, 3.5rem); 
+            font-weight: 800; 
+            color: var(--accent); 
+            line-height: 1;
+            word-wrap: break-word;
+        }
 
         /* ========================================
            13. SOCIAL HUB
@@ -1206,12 +1241,45 @@ html {
         .faq-container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
         .faq-item { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 24px; padding: 0 32px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .faq-item:hover { background: rgba(255, 255, 255, 0.04); border-color: rgba(124, 58, 237, 0.2); }
-        .faq-question { width: 100%; text-align: left; padding: 28px 0; font-size: 1.15rem; font-weight: 600; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; background: none; border: none; cursor: pointer; }
-        .faq-question i { color: var(--primary); font-size: 1rem; transition: transform 0.4s ease; }
+        .faq-question { 
+            width: 100%; 
+            text-align: left; 
+            padding: clamp(20px, 3vw, 28px) 0; 
+            font-size: clamp(0.95rem, 2vw + 0.25rem, 1.15rem); 
+            font-weight: 600; 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: none; 
+            border: none; 
+            cursor: pointer;
+            word-wrap: break-word;
+            min-height: 44px;
+        }
+        .faq-question i { 
+            color: var(--primary); 
+            font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem); 
+            transition: transform 0.4s ease;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
         .faq-question.active { color: var(--primary-glow); }
         .faq-question.active i { transform: rotate(180deg); }
-        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text-muted); }
-        .faq-answer p { padding-bottom: 28px; line-height: 1.7; font-size: 1rem; opacity: 0.9; }
+        .faq-answer { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            color: var(--text-muted);
+            word-wrap: break-word;
+        }
+        .faq-answer p { 
+            padding-bottom: clamp(20px, 3vw, 28px); 
+            line-height: 1.7; 
+            font-size: clamp(0.875rem, 1.5vw + 0.1rem, 1rem); 
+            opacity: 0.9;
+            word-wrap: break-word;
+        }
 
         /* ========================================
            15. FOOTER & COPYRIGHT STYLES
@@ -1253,10 +1321,34 @@ html {
            17. GLOBAL FLUID & RESPONSIVE SYSTEM (OSTATECZNA WERSJA)
         ============================================================ */
 
-        /* Płynna typografia - skaluje się automatycznie do ekranu */
-        h1 { font-size: clamp(2.2rem, 8vw, 4.5rem); letter-spacing: -0.04em; }
-        h2 { font-size: clamp(1.8rem, 5vw, 3rem); letter-spacing: -0.03em; }
-        .hero-subtitle { font-size: clamp(1rem, 2vw, 1.25rem) !important; }
+        /* Fluid Typography - scales automatically to screen */
+        h1 { 
+            font-size: clamp(1.75rem, 5vw + 1rem, 4.5rem); 
+            letter-spacing: -0.04em; 
+            line-height: 1.1;
+            word-wrap: break-word;
+        }
+        h2 { 
+            font-size: clamp(1.5rem, 4vw + 0.5rem, 3rem); 
+            letter-spacing: -0.03em; 
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+        h3 {
+            font-size: clamp(1.25rem, 3vw + 0.5rem, 2rem);
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+        .hero-subtitle { 
+            font-size: clamp(0.875rem, 2vw + 0.5rem, 1.25rem) !important; 
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        p {
+            font-size: clamp(0.875rem, 1.5vw + 0.25rem, 1rem);
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
 
         /* Adaptacja sekcji */
         .section { padding: clamp(60px, 10vw, 120px) 0; }
@@ -1410,10 +1502,11 @@ html {
         .old-price { 
             text-decoration: line-through; 
             color: #6B7280; 
-            font-size: 0.85rem; 
+            font-size: clamp(0.75rem, 1.5vw + 0.1rem, 0.85rem); 
             font-family: var(--font-code); 
             opacity: 0.6; 
-            margin-bottom: -4px; 
+            margin-bottom: -4px;
+            word-wrap: break-word;
         }
 
         /* MODAL STYLES (Fixed Z-Index & Visibility) */
@@ -1451,14 +1544,15 @@ html {
         }
 
         .modal-header h2 {
-            font-size: 1.4rem;          /* Idealny rozmiar (ok. 22px) - czytelny, ale nie krzyczy */
+            font-size: clamp(1.125rem, 3vw + 0.25rem, 1.4rem);
             color: #fff;
-            margin: 0;                  /* Usuwa domyślne odstępy, żeby tekst nie "skakał" */
+            margin: 0;
             font-family: 'Inter', sans-serif;
-            font-weight: 700;           /* Pogrubienie dla elegancji */
-            line-height: 1;             /* Kluczowe: usuwa pustą przestrzeń nad/pod literami, żeby stał równo */
-            display: flex;              /* Pomaga w idealnym wycentrowaniu w pionie */
-            align-items: center;        /* Centruje tekst względem swojej linii */
+            font-weight: 700;
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            word-wrap: break-word;
         }
 
         .close-modal {
@@ -1467,39 +1561,44 @@ html {
         .close-modal:hover { color: #fff; }
 
         .modal-body {
-            padding: 30px;
+            padding: clamp(20px, 3vw, 30px);
             overflow-y: auto;
             color: #9CA3AF;
-            font-size: 0.95rem;
+            font-size: clamp(0.875rem, 1.5vw + 0.1rem, 0.95rem);
             line-height: 1.7;
             text-align: left;
+            word-wrap: break-word;
         }
 
         .modal-body h2 {
-            font-size: 1.4rem !important;
+            font-size: clamp(1.125rem, 3vw + 0.25rem, 1.4rem) !important;
             color: #fff;
             text-transform: uppercase;
             font-weight: 700;
-            
-            /* TO CENTRUJE TEKST W PIONIE: */
-            /* Dajemy tyle samo miejsca w środku od góry i od dołu */
-            padding-top: 20px;
-            padding-bottom: 20px;
-            
-            /* Dodajemy linie bezpośrednio do napisu, żeby były zawsze równo */
+            padding-top: clamp(15px, 2vw, 20px);
+            padding-bottom: clamp(15px, 2vw, 20px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            
-            /* Odstępy zewnętrzne od reszty tekstu */
-            margin-top: 30px;
-            margin-bottom: 30px;
-            
-            /* Resetujemy wysokość linii, żeby tekst nie "pływał" */
+            margin-top: clamp(20px, 3vw, 30px);
+            margin-bottom: clamp(20px, 3vw, 30px);
             line-height: 1.2;
+            word-wrap: break-word;
         }
 
-        .modal-body h3 { color: #fff; margin: 30px 0 15px; font-size: 1.2rem; border-bottom: 1px solid rgba(124, 58, 237, 0.1); padding-bottom: 5px; }
-        .modal-body h4 { color: #d8b4fe; margin: 20px 0 10px; font-size: 1rem; }
+        .modal-body h3 { 
+            color: #fff; 
+            margin: clamp(20px, 3vw, 30px) 0 clamp(12px, 2vw, 15px); 
+            font-size: clamp(1rem, 2.5vw + 0.25rem, 1.2rem); 
+            border-bottom: 1px solid rgba(124, 58, 237, 0.1); 
+            padding-bottom: 5px;
+            word-wrap: break-word;
+        }
+        .modal-body h4 { 
+            color: #d8b4fe; 
+            margin: clamp(15px, 2vw, 20px) 0 clamp(8px, 1.5vw, 10px); 
+            font-size: clamp(0.875rem, 2vw + 0.1rem, 1rem);
+            word-wrap: break-word;
+        }
         .modal-body ul { padding-left: 20px; margin-bottom: 20px; }
         .modal-body li { margin-bottom: 10px; list-style-type: disc; }
         
@@ -1708,41 +1807,14 @@ html {
     }
 }
 
-/* --- Wklej to w miejsce starego .modal-body h2 --- */
-
-.modal-body h2 {
-    font-size: 1.3rem;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: 700;
-    text-align: center; /* Wyśrodkowanie tekstu */
-    
-    /* Symetryczne odstępy wewnątrz linii */
-    padding-top: 25px;
-    padding-bottom: 25px;
-    
-    /* Linie góra/dół */
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    
-    /* Odstępy od reszty tekstu */
-    margin-top: 40px;
-    margin-bottom: 30px;
-    line-height: 1.4;
-}
+/* --- Consolidated modal-body h2 styles above --- */
 
 /* Ukrywa <hr> jeśli został w HTML, żeby nie było podwójnych linii */
 .modal-body hr {
     display: none;
 }
 
-.modal-body h3 { 
-    color: #fff; 
-    margin: 30px 0 15px; 
-    font-size: 1.2rem; 
-    border-bottom: 1px solid rgba(124, 58, 237, 0.1); 
-    padding-bottom: 5px; 
-}
+/* --- Consolidated modal-body h3 styles above --- */
 
 .modal-body h4 { 
     color: #d8b4fe; 
@@ -1768,355 +1840,200 @@ html {
 }
 
 /* ============================================================
-   MASTER MOBILE FIX (IPHONE OPTIMIZED)
-   Wklej to na sam dół style.css
+   CLEAN MOBILE HEADER & ACADEMY FIX (Bez !important)
 ============================================================ */
 
 @media (max-width: 768px) {
 
-    /* 1. BLOKADA POZIOMEGO PRZEWIJANIA (Kluczowe na iPhone) */
-    html, body {
-        overflow-x: hidden !important;
-        width: 100% !important;
-        position: relative;
-    }
-
-    /* 2. UKŁADANIE ELEMENTÓW W PIONIE (Stacking) */
-    /* Wszystkie siatki (Grid) zamieniamy na jedną kolumnę */
-    .bento-grid, 
-    .social-grid, 
-    .courses-grid, 
-    .dash-stats-grid,
-    .footer-content {
-        display: grid !important;
-        grid-template-columns: 1fr !important; /* Jedna kolumna */
-        gap: 20px !important;
-        width: 100% !important;
-    }
-
-    /* Elementy rozciągamy na szerokość ekranu */
-    .bento-card, .course-card, .social-card, .calculator-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Elementy, które były na 2 kolumny, teraz zajmują 1 (całą szerokość) */
-    .col-span-2, .row-span-2 {
-        grid-column: auto !important;
-        grid-row: auto !important;
-    }
-
-    /* 3. DOSTOSOWANIE TEKSTU (Żeby nie był za wielki) */
-    h1, .hero-title {
-        font-size: 2.5rem !important; /* Mniejszy nagłówek */
-        line-height: 1.1 !important;
-    }
+    /* --- 1. WYRÓWNANIE IKONEK (LUDZIK + HAMBURGER) --- */
     
-    h2 {
-        font-size: 1.8rem !important;
-    }
-    
-    p, .hero-subtitle {
-        font-size: 1rem !important;
-        padding: 0 10px !important; /* Margines bezpieczeństwa dla tekstu */
-    }
-
-    /* 4. OPTYMALIZACJA DOTYKU (Touch Targets) */
-    /* Przyciski muszą być łatwe do kliknięcia palcem */
-    button, .btn, .nav-links a {
-        min-height: 44px !important; /* Standard Apple dla dotyku */
-        cursor: pointer !important;
+    /* Kontener trzymający ikonki */
+    .mobile-header-actions {
+        display: flex;
+        align-items: center;       /* Kluczowe: centruje w pionie */
+        justify-content: flex-end;
+        height: 100%;              /* Rozciąga do wysokości paska */
+        gap: 8px;                  /* Odstęp między ikonami */
+        padding-right: 0;
     }
 
-    /* 5. NAPRAWA MARGINESÓW (Padding) */
-    .container {
-        padding: 0 20px !important; /* Bezpieczny odstęp od krawędzi ekranu */
-    }
-    
-    .section {
-        padding: 60px 0 !important; /* Mniejsze odstępy między sekcjami */
-    }
-
-    /* 6. Dashboard (Ten wykres na górze) */
-    .hero-dashboard {
-        transform: none !important; /* Wyłącza pochylenie 3D na mobile */
-        margin-top: 20px !important;
-        width: 100% !important;
-    }
-    
-    /* 7. Poprawka menu mobilnego (Żeby było na wierzchu) */
-    .nav-links.active {
-        padding-top: 40px !important;
-        padding-bottom: 100px !important; /* Miejsce na pasek home iPhone'a */
-        overflow-y: auto !important; /* Pozwala przewijać menu jeśli jest długie */
-    }
-}
-
-
-@media (max-width: 768px) {
-    .navbar {
-        top: 36px !important;       /* Banner height */
-        height: 70px !important;    /* Mobile navbar height */
-        background: #050507 !important;
+    /* Wspólne style dla obu przycisków - robimy z nich identyczne klocki */
+    .mobile-user-icon,
+    .mobile-menu-btn {
+        display: flex;             /* Flex wewnątrz przycisku */
+        align-items: center;       /* Centrowanie ikony w pionie */
+        justify-content: center;   /* Centrowanie ikony w poziomie */
+        
+        width: 44px;               /* Sztywna szerokość */
+        height: 44px;              /* Sztywna wysokość */
+        
+        padding: 0;                /* Zerujemy odstępy wewnętrzne */
+        margin: 0;                 /* Zerujemy odstępy zewnętrzne */
+        border: none;              /* Usuwamy ramki */
+        background: transparent;   /* Przezroczyste tło */
+        line-height: 1;            /* Reset wysokości linii tekstu */
+        text-decoration: none;     /* Usuwamy podkreślenia */
     }
 
-    .nav-links.active {
+    /* Dopasowanie wielkości ikon, żeby wyglądały optycznie tak samo */
+    .mobile-user-icon {
+        font-size: 1.3rem; 
+        color: var(--text-muted);
+    }
+
+    .mobile-menu-btn {
+        font-size: 1.5rem;
+        color: var(--text-main);
+    }
+
+    /* --- 2. LOGO --- */
+    .navbar .brand img, 
+    .nav-logo {
+        height: 38px;              /* Optymalna wysokość na mobile */
+        width: auto;
+        object-fit: contain;       /* Zapobiega rozciąganiu */
+        display: block;
+    }
+
+    /* --- 3. NAPRAWA ACADEMY (MEGA MENU) --- */
+    /* Wyciągamy okno na sam wierzch */
+    .mega-menu {
         position: fixed;
-        top: 106px !important;      /* 36px banner + 70px navbar */
+        top: 0;
         left: 0;
         width: 100%;
-        height: calc(100vh - 106px);
-        background: rgba(5, 5, 7, 0.98) !important;
-        backdrop-filter: blur(25px);
-        padding: 40px 0 !important;
-        display: flex !important;
-        flex-direction: column;
-        gap: 20px;
+        height: 100vh;
+        z-index: 2000;             /* Wyżej niż menu nawigacyjne */
+        background: rgba(5, 5, 7, 0.98);
+        padding-top: 90px;         /* Miejsce od góry */
+        overflow-y: auto;          /* Przewijanie */
+        
+        /* Reset stylów desktopowych */
+        transform: none;
+        border: none;
+        border-radius: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
     }
-    
-    /* Proper link sizing for touch */
-    .nav-links a {
-        min-height: 44px !important; /* Apple's touch standard */
-        font-size: 1.2rem !important;
-        padding: 12px 0 !important;
-        width: 100%;
-        text-align: center;
-    }
-}
 
+    .mega-menu.show {
+        opacity: 1;
+        visibility: visible;
+        display: block;
+    }
 
-html, body {
-    overflow-x: hidden !important;
-    width: 100% !important;
-    position: relative;
-}
-
-.container {
-    padding: 0 clamp(16px, 4vw, 24px);
-    max-width: 100%;
-    overflow: hidden;
-}
-
-/* Force all grids to single column */
-@media (max-width: 768px) {
-    .bento-grid,
-    .social-grid,
-    .courses-grid,
-    .dash-stats-grid {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-    }
-    
-    .col-span-2,
-    .row-span-2 {
-        grid-column: auto !important;
-        grid-row: auto !important;
-    }
-}
-
-
-@media (max-width: 768px) {
-    .dash-stats-grid {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
-    }
-    
-    .hero-dashboard {
-        transform: none !important; /* Remove 3D tilt on mobile */
-        max-width: 95%;
-        margin: 0 auto;
-    }
-    
-    .stat-number {
-        font-size: clamp(1.5rem, 4vw, 2rem) !important;
-    }
-}
-
-
-button, .btn, .nav-links a, .filter-btn {
-    min-height: 44px !important;
-    min-width: 44px !important;
-    padding: 12px 24px !important;
-}
-
-.mobile-menu-btn {
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-@media (max-width: 768px) {
-    .modal-content {
-        width: 90% !important;
-        max-width: 380px !important;
-        max-height: 85vh !important;
-        padding: 30px 20px !important;
-        overflow-y: auto !important;
-    }
-    
-    .modal-content h2 {
-        font-size: 1.5rem !important;
-    }
-    
-    .modal-body {
-        padding: 0 10px 20px 10px !important;
-        font-size: 0.9rem !important;
-    }
-}
-
-
-
-@media (max-width: 768px) {
-    #subscription-hero {
-        transform: none !important;
-        padding: 20px !important;
-        margin: 0 10px 30px !important;
-    }
-    
-    #subscription-hero > div {
-        flex-direction: column !important;
-        text-align: center !important;
-    }
-    
-    #subscription-hero h2 {
-        font-size: 1.4rem !important;
-    }
-}
-
-
-@media (max-width: 768px) {
-    .calculator-card {
-        padding: 30px 20px !important;
-    }
-    
-    .calc-grid {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 30px !important;
-    }
-    
-    input[type=range] {
-        height: 30px; /* Larger touch area */
-    }
-    
-    .result-number {
-        font-size: 2.2rem !important;
-    }
-}
-
-
-@media (max-width: 768px) {
-    .courses-grid {
-        grid-template-columns: 1fr !important;
-        gap: 24px !important;
-        padding: 0 10px;
-    }
-    
-    .course-card {
-        max-width: 100%;
-        margin: 0 !important;
-    }
-    
-    .card-footer {
-        flex-direction: column !important;
-        gap: 15px !important;
-        align-items: stretch !important;
-    }
-    
-    .btn-card {
-        width: 100% !important;
-    }
-}
-
-
-@media (max-width: 768px) {
-    .mega-menu {
-        top: 106px !important;
-        left: 0 !important;
-        width: 100vw !important;
-        max-width: 100vw !important;
-        border-radius: 0 0 20px 20px !important;
-        padding: 40px 15px 15px 15px !important;
-    }
-    
+    /* Układ ikon w Academy */
     .mega-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 2 kolumny */
+        gap: 15px;
+        padding: 20px;
     }
-    
+
+    /* Przycisk zamknięcia Academy */
     .close-mega {
-        top: 8px !important;
-        right: 18px !important;
-        width: 34px !important;
-        height: 34px !important;
-        z-index: 10;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 2005;
     }
 }
 
-
-/* Fluid typography using clamp() */
-h1, .hero-title {
-    font-size: clamp(2.2rem, 8vw, 4.5rem) !important;
-}
-
-h2 {
-    font-size: clamp(1.8rem, 5vw, 3rem) !important;
-}
-
-.hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.25rem) !important;
-}
-
-p {
-    font-size: clamp(0.9rem, 2vw, 1rem) !important;
-}
-
+/* ============================================================
+   CLEAN MOBILE FIXES (Logo, Icons, Academy) - FINAL
+   Wklej to na sam dół style.css (zastępując stare poprawki)
+============================================================ */
 
 @media (max-width: 768px) {
-    .hero-dashboard {
-        transform: none !important; /* Remove 3D effects */
+
+    /* --- 1. IKONKI (LUDZIK + HAMBURGER) W JEDNEJ LINII --- */
+    .mobile-header-actions {
+        display: flex;
+        align-items: center;       /* Kluczowe: centruje w pionie */
+        justify-content: flex-end; /* Dosunięcie do prawej */
+        gap: 8px;                  /* Mały odstęp między ikonami */
+        height: 100%;              /* Pełna wysokość paska */
+        padding-right: 0;
     }
-    
-    .constellation-canvas {
-        display: none; /* Disable canvas animation on very small screens */
+
+    /* Resetujemy oba przyciski do identycznych "pudełek" */
+    .mobile-user-icon,
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;               /* Sztywna szerokość */
+        height: 44px;              /* Sztywna wysokość */
+        padding: 0;
+        margin: 0;
+        border: none;
+        background: transparent;
+        line-height: 1;
+        text-decoration: none;
     }
-}
 
+    /* Rozmiary ikon wewnątrz pudełek */
+    .mobile-user-icon { font-size: 1.3rem; color: var(--text-muted); }
+    .mobile-menu-btn { font-size: 1.5rem; color: var(--text-main); }
 
-html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 106px; /* Accounts for fixed header */
-}
+    /* --- 2. LOGO (ZABEZPIECZENIE PROPORCJI) --- */
+    .navbar .brand img,
+    .nav-logo {
+        height: 38px;              /* Optymalna wysokość na mobile */
+        width: auto;               /* Szerokość automatyczna */
+        object-fit: contain;       /* Zapobiega rozciąganiu */
+        display: block;
+        margin: 0;
+    }
 
-[id] {
-    scroll-margin-top: 106px;
-}
+    /* --- 3. ACADEMY (MEGA MENU) --- */
+    /* To okno musi być wyżej niż Twój overlay (z-index: 9998) */
+    .mega-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 10000;            /* Wyżej niż blur i nawigacja */
+        background: rgba(5, 5, 7, 0.98);
+        padding-top: 90px;
+        overflow-y: auto;
+        
+        /* Reset stylów z desktopu */
+        transform: none;
+        border: none;
+        border-radius: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+        display: block; /* Ważne! Inaczej nie zadziała */
+    }
 
-/* Prevent iOS zoom on focus */
-input, select, textarea {
-    font-size: 16px !important;
-}
+    .mega-menu.show {
+        opacity: 1;
+        visibility: visible;
+    }
 
-/* Fix sticky positioning */
-.navbar {
-    position: -webkit-sticky;
-    position: sticky;
-}
+    /* Siatka ikon w środku */
+    .mega-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 20px;
+    }
 
-/* Fix backdrop-filter */
-.modal-overlay {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-
-/* Fix viewport height on Android */
-.nav-links.active {
-    height: 100dvh; /* Dynamic viewport height */
-    height: calc(100vh - 106px); /* Fallback */
+    /* Przycisk X do zamykania */
+    .close-mega {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 10001;
+    }
 }
