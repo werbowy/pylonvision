@@ -1,6 +1,7 @@
 /* ============================================================
    PYLON VISION - Enhanced JavaScript
-   Improved for better functionality and error resilience
+   Mobile-First Responsive Functionality
+   Version: 2.0.0
 ============================================================ */
 
 // ========== 1. UTILITY FUNCTIONS ==========
@@ -77,6 +78,26 @@ const utils = {
                 return false;
             }
         }
+    },
+
+    // Check if device is mobile
+    isMobile: () => {
+        return window.innerWidth <= 768;
+    },
+
+    // Check if device is tablet
+    isTablet: () => {
+        return window.innerWidth > 768 && window.innerWidth <= 1024;
+    },
+
+    // Check if device is desktop
+    isDesktop: () => {
+        return window.innerWidth > 1024;
+    },
+
+    // Check if device supports touch
+    isTouch: () => {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     }
 };
 
@@ -115,183 +136,298 @@ document.addEventListener('DOMContentLoaded', () => {
     PromoText.init();
     MegaMenu.init();
     EmailProtection.init();
+    ScrollReveal.init();
+    Constellation.init();
+    Ticker.init();
+    Countdown.init();
+    SubBanner.init();
+    TouchOptimizations.init();
+    PerformanceMonitor.init();
 });
 
 // ========== 3. MOBILE MENU MODULE ==========
 const MobileMenu = {
+    isOpen: false,
+    
     init() {
-        const btn = utils.query('.mobile-menu-btn');
-        const menu = utils.query('.nav-links');
+        this.btn = utils.query('.mobile-menu-btn');
+        this.menu = utils.query('.nav-links-mobile');
+        
+        if (!this.btn || !this.menu) return;
 
-        if (!btn || !menu) return;
-
-        btn.addEventListener('click', (e) => {
+        // Toggle menu
+        this.btn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            this.toggle(btn, menu);
+            this.toggle();
         });
 
-        // Close on link click - Z POPRAWKĄ DLA ACADEMY
-        menu.querySelectorAll('a').forEach(link => {
+        // Close on link click (except Academy)
+        this.menu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', (e) => {
-                // WAŻNE: Sprawdzamy czy to Academy lub czy kliknięcie jest wewnątrz Mega Menu
-                if (link.id === 'academy-trigger' || link.closest('.mega-menu')) {
-                    // Jeśli tak, to przerywamy funkcję i NIE zamykamy menu
-                    return; 
+                // Don't close if it's the Academy trigger
+                if (link.id === 'academy-trigger-mobile') {
+                    return;
                 }
                 
-                // Dla każdego innego linku - zamykamy menu
-                this.close(btn, menu);
+                // Close menu for other links
+                this.close();
             });
         });
 
         // Close on outside click
         document.addEventListener('click', (e) => {
-            // Ignorujemy kliknięcia wewnątrz Mega Menu
-            if (e.target.closest('.mega-menu') || e.target.closest('#academy-trigger')) {
-                return;
-            }
-
-            if (menu.classList.contains('active') &&
-                !menu.contains(e.target) &&
-                !btn.contains(e.target)) {
-                this.close(btn, menu);
+            if (this.isOpen && 
+                !this.menu.contains(e.target) && 
+                !this.btn.contains(e.target) &&
+                !e.target.closest('.mega-menu')) {
+                this.close();
             }
         });
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.close();
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', utils.debounce(() => {
+            if (utils.isDesktop() && this.isOpen) {
+                this.close();
+            }
+        }, 250));
     },
 
-    toggle(btn, menu) {
-        const isActive = menu.classList.toggle('active');
-        btn.classList.toggle('active', isActive);
+    toggle() {
+        if (this.isOpen) {
+            this.close();
+        } else {
+            this.open();
+        }
+    },
+
+    open() {
+        this.isOpen = true;
+        this.btn.classList.add('active');
+        this.btn.setAttribute('aria-expanded', 'true');
+        this.menu.classList.add('active');
         
-        // Blokujemy scrollowanie strony pod spodem
-        document.body.style.overflow = isActive ? 'hidden' : '';
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+        
+        // Add backdrop
+        this.addBackdrop();
+        
+        // Focus first link for accessibility
+        const firstLink = this.menu.querySelector('a');
+        if (firstLink) {
+            setTimeout(() => firstLink.focus(), 100);
+        }
     },
 
-    close(btn, menu) {
-        btn.classList.remove('active');
-        menu.classList.remove('active');
+    close() {
+        this.isOpen = false;
+        this.btn.classList.remove('active');
+        this.btn.setAttribute('aria-expanded', 'false');
+        this.menu.classList.remove('active');
+        
+        // Restore body scroll
         document.body.style.overflow = '';
         
-        // Dodatkowo zamykamy Mega Menu jeśli jest otwarte
-        const megaMenu = document.getElementById('academy-mega-menu');
-        const megaOverlay = document.getElementById('mega-overlay');
-        if(megaMenu) megaMenu.classList.remove('show');
-        if(megaOverlay) megaOverlay.classList.remove('show');
+        // Remove backdrop
+        this.removeBackdrop();
+        
+        // Also close mega menu if open
+        if (window.MegaMenu && window.MegaMenu.isOpen) {
+            window.MegaMenu.close();
+        }
+    },
+    
+    addBackdrop() {
+        let backdrop = utils.query('.menu-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'menu-backdrop';
+            backdrop.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(5, 5, 7, 0.8);
+                backdrop-filter: blur(5px);
+                z-index: 1499;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            document.body.appendChild(backdrop);
+        }
+        
+        // Animate in
+        requestAnimationFrame(() => {
+            backdrop.style.opacity = '1';
+        });
+        
+        // Close on backdrop click
+        backdrop.addEventListener('click', () => {
+            this.close();
+        });
+    },
+    
+    removeBackdrop() {
+        const backdrop = utils.query('.menu-backdrop');
+        if (backdrop) {
+            backdrop.style.opacity = '0';
+            setTimeout(() => {
+                if (backdrop.parentNode) {
+                    backdrop.parentNode.removeChild(backdrop);
+                }
+            }, 300);
+        }
     }
 };
 
 // ========== 4. COOKIE BANNER MODULE ==========
 const CookieBanner = {
     init() {
-        const banner = utils.getElement('cookie-banner');
-        const acceptBtn = utils.getElement('accept-cookies');
+        this.banner = utils.getElement('cookie-banner');
+        this.acceptBtn = utils.getElement('accept-cookies');
 
-        if (!banner) return;
+        if (!this.banner) return;
 
+        // Show banner if not accepted
         if (!utils.storage.get('pylon_cookie_consent')) {
-            setTimeout(() => banner?.classList.add('show'), 2000);
+            setTimeout(() => {
+                this.banner.classList.add('show');
+            }, 2000);
         }
 
-        acceptBtn?.addEventListener('click', () => {
+        // Accept cookies
+        this.acceptBtn?.addEventListener('click', () => {
             utils.storage.set('pylon_cookie_consent', 'true');
-            banner.classList.remove('show');
+            this.banner.classList.remove('show');
         });
+
+        // Auto-hide after 10 seconds if not interacted
+        setTimeout(() => {
+            if (!utils.storage.get('pylon_cookie_consent')) {
+                this.banner.classList.remove('show');
+            }
+        }, 10000);
     }
 };
 
 // ========== 5. NAVBAR SCROLL & PROGRESS ==========
 const NavbarScroll = {
     init() {
-        const navbar = utils.query('.navbar');
-        const progress = utils.getElement('scroll-progress');
+        this.navbar = utils.query('.navbar');
+        this.progress = utils.getElement('scroll-progress');
+        
+        if (!this.navbar) return;
 
         const handleScroll = utils.throttle(() => {
             const scrollPos = window.scrollY;
             const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
 
-            if (progress && totalHeight > 0) {
+            // Update scroll progress
+            if (this.progress && totalHeight > 0) {
                 const percent = Math.min((scrollPos / totalHeight * 100), 100);
-                progress.style.width = `${percent}%`;
+                this.progress.style.width = `${percent}%`;
             }
 
-            navbar?.classList.toggle('scrolled', scrollPos > 50);
+            // Add scrolled class to navbar
+            this.navbar.classList.toggle('scrolled', scrollPos > 50);
         }, 100);
 
         window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Initial call
+        handleScroll();
     }
 };
 
 // ========== 6. 3D SUBSCRIPTION BANNER ==========
 const SubBanner = {
     init() {
-        const banner = utils.getElement('subscription-hero');
-        if (!banner) return;
+        this.banner = utils.getElement('subscription-hero');
+        if (!this.banner) return;
 
-        let rect = banner.getBoundingClientRect();
+        // Don't initialize on mobile for performance
+        if (utils.isMobile()) return;
+
+        let rect = this.banner.getBoundingClientRect();
 
         const updateRect = () => {
-            rect = banner.getBoundingClientRect();
+            rect = this.banner.getBoundingClientRect();
         };
 
         window.addEventListener('resize', utils.debounce(updateRect, 200));
         window.addEventListener('scroll', utils.throttle(updateRect, 100), { passive: true });
 
-        banner.addEventListener('mousemove', (e) => {
+        this.banner.addEventListener('mousemove', (e) => {
             requestAnimationFrame(() => {
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
-                banner.style.setProperty('--mouse-x', `${x}px`);
-                banner.style.setProperty('--mouse-y', `${y}px`);
+                this.banner.style.setProperty('--mouse-x', `${x}px`);
+                this.banner.style.setProperty('--mouse-y', `${y}px`);
 
                 const rotateX = (y - rect.height / 2) / 30;
                 const rotateY = (rect.width / 2 - x) / 30;
 
-                banner.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                this.banner.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             });
         }, { passive: true });
 
-        banner.addEventListener('mouseleave', () => {
+        this.banner.addEventListener('mouseleave', () => {
             requestAnimationFrame(() => {
-                banner.style.transform = 'perspective(1200px) rotateX(0) rotateY(0)';
+                this.banner.style.transform = 'perspective(1200px) rotateX(0) rotateY(0)';
             });
         });
     }
 };
-
-// Initialize Sub Banner
-window.addEventListener('DOMContentLoaded', () => SubBanner.init());
 
 // ========== 7. INFINITY TICKER ==========
 const Ticker = {
     init() {
-        const ticker = utils.getElement('logoTicker');
-        const wrap = utils.query('.ticker-wrap');
+        this.ticker = utils.getElement('logoTicker');
+        this.wrap = utils.query('.ticker-wrap');
 
-        if (!ticker) return;
+        if (!this.ticker) return;
 
         // Clone items for infinite scroll
-        Array.from(ticker.children).forEach(item => {
+        const items = Array.from(this.ticker.children);
+        items.forEach(item => {
             const clone = item.cloneNode(true);
             clone.setAttribute('aria-hidden', 'true');
-            ticker.appendChild(clone);
+            this.ticker.appendChild(clone);
         });
 
-        // Pause when off-screen
-        if (wrap) {
+        // Pause when off-screen (performance optimization)
+        if (this.wrap && 'IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    ticker.classList.toggle('paused', !entry.isIntersecting);
+                    this.ticker.classList.toggle('paused', !entry.isIntersecting);
                 });
             }, { threshold: 0 });
 
-            observer.observe(wrap);
+            observer.observe(this.wrap);
+        }
+
+        // Pause on hover (desktop only)
+        if (!utils.isMobile()) {
+            this.ticker.addEventListener('mouseenter', () => {
+                this.ticker.classList.add('paused');
+            });
+            
+            this.ticker.addEventListener('mouseleave', () => {
+                this.ticker.classList.remove('paused');
+            });
         }
     }
 };
-
-window.addEventListener('DOMContentLoaded', () => Ticker.init());
 
 // ========== 8. COURSE LIBRARY MODULE ==========
 const CourseLibrary = {
@@ -333,19 +469,40 @@ const CourseLibrary = {
 
     setupFilters() {
         this.filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                // Don't trigger if already active
+                if (btn.classList.contains('active')) return;
+                
+                // Update active state
                 this.filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
+                
+                // Filter courses
                 this.filterCourses();
+                
+                // Close mobile menu if open
+                if (window.MobileMenu && window.MobileMenu.isOpen) {
+                    window.MobileMenu.close();
+                }
             });
         });
     },
 
     setupSearch() {
         if (!this.searchInput) return;
+        
         this.searchInput.addEventListener('input', utils.debounce(() => {
             this.filterCourses();
         }, 300));
+        
+        // Clear search on escape
+        this.searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.searchInput.value = '';
+                this.filterCourses();
+                this.searchInput.blur();
+            }
+        });
     },
 
     filterCourses() {
@@ -355,7 +512,8 @@ const CourseLibrary = {
 
         const filtered = this.courses.filter(course => {
             const matchesCategory = category === 'all' || course.category === category;
-            const matchesSearch = course.title.toLowerCase().includes(term);
+            const matchesSearch = course.title.toLowerCase().includes(term) || 
+                                 course.desc.toLowerCase().includes(term);
             return matchesCategory && matchesSearch;
         });
 
@@ -364,7 +522,21 @@ const CourseLibrary = {
 
     render(data) {
         if (!this.grid) return;
+        
+        // Clear existing content
         this.grid.innerHTML = '';
+        
+        // Show no results message if empty
+        if (data.length === 0) {
+            this.grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>No courses found</h3>
+                    <p>Try adjusting your search or filter criteria</p>
+                </div>
+            `;
+            return;
+        }
 
         const currentDate = new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
@@ -376,6 +548,7 @@ const CourseLibrary = {
             const card = document.createElement('div');
             card.className = 'course-card';
             card.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1}s`;
+            card.style.opacity = '0';
 
             card.innerHTML = `
                 <div class="card-image-wrapper">
@@ -396,29 +569,46 @@ const CourseLibrary = {
 
                     <p class="card-desc">${course.desc}</p>
                     
-                    <div class="card-footer">
-                        <div class="price-box">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                                <span class="old-price">$${stats.oldPrice}</span>
-                                <span style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.25); font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 6px;">-${discountPercent}%</span>
+                    <div class="card-footer" style="display: flex; flex-direction: column; gap: 15px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        
+                        <div class="price-box" style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                                    <span class="old-price" style="text-decoration: line-through; color: #9CA3AF; opacity: 0.8;">$${stats.oldPrice}</span>
+                                    <span style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.25); font-size: 0.75rem; font-weight: 700; padding: 1px 6px; border-radius: 4px;">-${discountPercent}%</span>
+                                </div>
+                                <span class="card-price" style="font-size: 1.5rem; font-weight: 700; color: #fff;">${course.price}</span>
                             </div>
-                            <span class="card-price">${course.price}</span>
-                            <div style="font-size: 0.65rem; color: #9CA3AF; margin-top: 4px; display:flex; align-items:center; gap:4px;">
+                            
+                            <div style="font-size: 0.65rem; color: #9CA3AF; margin-bottom: 6px; display:flex; align-items:center; gap:4px;">
                                 <i class="fa-solid fa-shield-halved"></i> 30-Day Guarantee
                             </div>
                         </div>
                         
-                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
-                            <a href="${course.url}" class="btn-card">Get Access</a>
-                            <span style="font-size: 0.65rem; color: #A78BFA; font-weight:600;">
+                        <div style="width: 100%; text-align: center;">
+                            <a href="${course.url}" class="btn-card" style="display: block; width: 100%; text-align: center; padding: 12px 0;">Get Access</a>
+                            
+                            <span style="font-size: 0.65rem; color: #A78BFA; font-weight:600; display: block; margin-top: 8px;">
                                 <i class="fa-solid fa-bolt"></i> Instant Access
                             </span>
                         </div>
+
                     </div>
                 </div>
             `;
-
             this.grid.appendChild(card);
+        });
+
+        // Animate cards in
+        this.animateCardsIn();
+    },
+
+    animateCardsIn() {
+        const cards = this.grid.querySelectorAll('.course-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+            }, index * 100);
         });
     },
 
@@ -434,9 +624,10 @@ const CourseLibrary = {
     },
 
     getStarsHTML(rating) {
-        if (rating >= 4.8) {
+        const numRating = parseFloat(rating);
+        if (numRating >= 4.8) {
             return '<i class="fa-solid fa-star"></i>'.repeat(5);
-        } else if (rating >= 4.3) {
+        } else if (numRating >= 4.3) {
             return '<i class="fa-solid fa-star"></i>'.repeat(4) + '<i class="fa-solid fa-star-half-stroke"></i>';
         } else {
             return '<i class="fa-solid fa-star"></i>'.repeat(4) + '<i class="fa-regular fa-star"></i>';
@@ -474,9 +665,12 @@ const ProofPulse = {
         this.loc = utils.getElement('proof-loc');
         this.info = utils.query('.proof-info');
 
-        if (this.pulse && this.img && this.name && this.loc && this.info) {
-            setTimeout(() => this.show(), 4500);
-        }
+        if (!this.pulse || !this.img || !this.name || !this.loc || !this.info) return;
+
+        // Don't show on mobile to save space
+        if (utils.isMobile()) return;
+
+        setTimeout(() => this.show(), 4500);
     },
 
     getWeightedRegion() {
@@ -503,7 +697,8 @@ const ProofPulse = {
             const product = this.getRandomItem(this.productActions);
             const timeAgo = Math.random() > 0.8 ? "Just now" : Math.floor(Math.random() * 59) + 1 + "m ago";
 
-            this.img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}+${lastInitial}&background=random&color=fff&rounded=true&size=128&bold=true&format=svg`;
+            this.img.src = `https://ui-avatars.com/api/?name= ${encodeURIComponent(firstName)}+${lastInitial}&background=random&color=fff&rounded=true&size=128&bold=true&format=svg`;
+            this.img.alt = `${fullName} avatar`;
             this.name.textContent = fullName;
             this.loc.textContent = country;
 
@@ -519,8 +714,12 @@ const ProofPulse = {
             }
 
             this.pulse.classList.add('visible');
+            
+            // Auto-hide after 6 seconds
             setTimeout(() => {
                 this.pulse.classList.remove('visible');
+                
+                // Schedule next show
                 const nextInterval = Math.random() * 16000 + 8000;
                 setTimeout(() => this.show(), nextInterval);
             }, 6000);
@@ -532,264 +731,112 @@ const ProofPulse = {
 
 // ========== 10. CONSTELLATION ANIMATION ==========
 const Constellation = {
+    canvas: null,
+    ctx: null,
+    particles: [],
+    animationId: null,
+
     init() {
-        const canvas = utils.getElement('constellation-canvas');
-        if (!canvas) return;
+        this.canvas = utils.getElement('constellation-canvas');
+        if (!this.canvas) return;
 
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
-        const particleCount = window.innerWidth < 768 ? 20 : 45;
-        const connectionDistance = 150;
+        // Don't run on mobile for performance
+        if (utils.isMobile()) return;
 
-        const resize = () => {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-        };
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        this.createParticles();
+        this.animate();
 
-        window.addEventListener('resize', utils.debounce(resize, 200));
-        resize();
+        // Handle resize
+        window.addEventListener('resize', utils.debounce(() => {
+            this.resize();
+            this.createParticles();
+        }, 200));
+    },
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2;
-            }
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    },
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-
-            draw() {
-                ctx.fillStyle = getComputedStyle(document.documentElement)
-                    .getPropertyValue('--particle-color').trim();
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
+    createParticles() {
+        this.particles = [];
+        const particleCount = utils.isMobile() ? 15 : 40;
 
         for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-
-        const animate = () => {
-            ctx.clearRect(0, 0, width, height);
-            particles.forEach((p, i) => {
-                p.update();
-                p.draw();
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = p.x - particles[j].x;
-                    const dy = p.y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < connectionDistance) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(124, 58, 237, ${1 - distance / connectionDistance})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
+            this.particles.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 2
             });
-            requestAnimationFrame(animate);
-        };
-
-        animate();
-    }
-};
-
-window.addEventListener('DOMContentLoaded', () => Constellation.init());
-
-// ========== 11. ROI CALCULATOR MODULE ==========
-const ROICalculator = {
-    init() {
-        this.hoursSlider = utils.getElement('hours-slider');
-        this.rateSlider = utils.getElement('rate-slider');
-
-        if (!this.hoursSlider || !this.rateSlider) return;
-
-        const update = () => {
-            const hours = parseInt(this.hoursSlider.value) || 0;
-            const rate = parseInt(this.rateSlider.value) || 0;
-
-            const hoursDisplay = utils.getElement('hours-display');
-            const rateDisplay = utils.getElement('rate-display');
-            const resultDisplay = utils.getElement('result-display');
-
-            if (hoursDisplay) hoursDisplay.textContent = hours;
-            if (rateDisplay) rateDisplay.textContent = `$${rate}`;
-            if (resultDisplay) {
-                resultDisplay.textContent = `$${(hours * rate * 12).toLocaleString()}`;
-            }
-        };
-
-        this.hoursSlider.addEventListener('input', update);
-        this.rateSlider.addEventListener('input', update);
-        update();
-    }
-};
-
-// ========== 12. FAQ MODULE ==========
-const FAQ = {
-    init() {
-        const questions = utils.queryAll('.faq-question');
-
-        questions.forEach(question => {
-            question.addEventListener('click', function () {
-                // Close others
-                questions.forEach(q => {
-                    if (q !== this) {
-                        q.classList.remove('active');
-                        const panel = q.nextElementSibling;
-                        if (panel) panel.style.maxHeight = null;
-                    }
-                });
-
-                // Toggle current
-                this.classList.toggle('active');
-                const panel = this.nextElementSibling;
-                if (panel) {
-                    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + 'px';
-                }
-            });
-        });
-    }
-};
-
-// ========== 13. COUNTDOWN TIMER ==========
-const Countdown = {
-    init() {
-        const display = utils.getElement('countdown');
-        if (!display) return;
-
-        const update = () => {
-            try {
-                const now = new Date();
-                const endOfDay = new Date();
-                endOfDay.setHours(23, 59, 59, 999);
-                const diff = Math.max(0, endOfDay - now);
-
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                display.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            } catch (error) {
-                console.error('Countdown error:', error);
-            }
-        };
-
-        setInterval(update, 1000);
-        update();
-    }
-};
-
-window.addEventListener('DOMContentLoaded', () => Countdown.init());
-
-// ========== 14. SCROLL REVEAL ==========
-const ScrollReveal = {
-    init() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-        utils.queryAll('.reveal').forEach(el => observer.observe(el));
-
-        // Bento card mouse effect
-        utils.queryAll('.bento-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-                card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-            }, { passive: true });
-        });
-    }
-};
-
-window.addEventListener('DOMContentLoaded', () => ScrollReveal.init());
-
-// ========== 15. MODAL MODULE ==========
-const Modals = {
-    init() {
-        // Login/Signup modals
-        window.openLoginModal = () => this.open('login-modal');
-        window.closeLoginModal = () => this.close('login-modal');
-        window.closeSignupModal = () => this.close('signup-modal');
-
-        window.switchToSignup = () => {
-            this.close('login-modal');
-            this.open('signup-modal');
-        };
-
-        window.switchToLogin = () => {
-            this.close('signup-modal');
-            this.open('login-modal');
-        };
-
-        // Generic modals
-        const modalIds = ['privacy-modal', 'terms-modal', 'about-modal', 'story-modal', 'roadmap-modal'];
-
-        modalIds.forEach(id => {
-            // Ta linia usuwa "-modal" PRZED zmianą na wielkie litery, co naprawia błąd
-            const cleanName = id.replace('-modal', '');
-            const camelCase = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-            
-            window[`open${camelCase}Modal`] = () => this.open(id);
-            window[`close${camelCase}Modal`] = () => this.close(id);
-        });
-
-        // Close on overlay click
-        window.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal-overlay')) {
-                this.close(e.target.id);
-            }
-        });
-    },
-
-    open(id) {
-        const modal = utils.getElement(id);
-        if (modal) {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
         }
     },
 
-    close(id) {
-        const modal = utils.getElement(id);
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+    animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Update and draw particles
+        this.particles.forEach((particle, i) => {
+            // Update position
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+
+            // Bounce off edges
+            if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+            if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
+
+            // Draw particle
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            this.ctx.fill();
+
+            // Draw connections
+            for (let j = i + 1; j < this.particles.length; j++) {
+                const other = this.particles[j];
+                const dx = particle.x - other.x;
+                const dy = particle.y - other.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 150) {
+                    const opacity = 1 - distance / 150;
+                    this.ctx.beginPath();
+                    this.ctx.strokeStyle = `rgba(124, 58, 237, ${opacity * 0.5})`;
+                    this.ctx.lineWidth = 0.5;
+                    this.ctx.moveTo(particle.x, particle.y);
+                    this.ctx.lineTo(other.x, other.y);
+                    this.ctx.stroke();
+                }
+            }
+        });
+
+        this.animationId = requestAnimationFrame(() => this.animate());
+    },
+
+    destroy() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
         }
     }
 };
 
-// ========== 16. DASHBOARD ANIMATION MODULE ==========
+// ========== 11. DASHBOARD ANIMATION ==========
 const Dashboard = {
     init() {
-        const target = utils.query('.hero-dashboard');
-        if (!target) return;
+        this.target = utils.query('.hero-dashboard');
+        if (!this.target) return;
 
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 this.animate();
-                observer.unobserve(target);
+                observer.unobserve(this.target);
             }
         }, { threshold: 0.3 });
 
-        observer.observe(target);
+        observer.observe(this.target);
     },
 
     animate() {
@@ -812,21 +859,22 @@ const Dashboard = {
                 const progress = Math.min((timestamp - startTime) / duration, 1);
                 const currentVal = Math.floor(progress * stat.end);
 
-                numberEl.textContent = currentVal;
+                numberEl.textContent = currentVal.toLocaleString();
                 barEl.style.width = `${(stat.end / stat.max) * progress * 100}%`;
 
                 if (progress < 1) {
                     requestAnimationFrame(step);
                 } else {
-                    numberEl.textContent = stat.end;
+                    numberEl.textContent = stat.end.toLocaleString();
                     barEl.style.width = `${(stat.end / stat.max * 100)}%`;
                 }
             };
 
-            requestAnimationFrame(step);
+            // Stagger animations
+            setTimeout(() => requestAnimationFrame(step), stats.indexOf(stat) * 200);
         });
 
-        // Log animation
+        // Animate log
         this.animateLog();
     },
 
@@ -850,26 +898,229 @@ const Dashboard = {
                 div.className = 'log-line';
                 div.textContent = "> " + logLines[lineIdx];
                 logContainer.appendChild(div);
+                
+                // Scroll to bottom
+                logContainer.scrollTop = logContainer.scrollHeight;
+                
                 lineIdx++;
                 setTimeout(addLog, 800);
             }
         };
 
-        setTimeout(addLog, 500);
+        setTimeout(addLog, 1000);
     }
 };
 
-// ========== 17. PROMO TEXT MODULE ==========
+// ========== 12. FAQ MODULE ==========
+const FAQ = {
+    init() {
+        this.questions = utils.queryAll('.faq-question');
+        if (this.questions.length === 0) return;
+
+        this.questions.forEach(question => {
+            question.addEventListener('click', () => {
+                this.toggle(question);
+            });
+            
+            // Handle keyboard navigation
+            question.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.toggle(question);
+                }
+            });
+        });
+    },
+
+    toggle(question) {
+        const isActive = question.classList.contains('active');
+        const panel = question.nextElementSibling;
+        
+        if (!panel) return;
+
+        // Close all other questions
+        this.questions.forEach(q => {
+            if (q !== question) {
+                q.classList.remove('active');
+                q.setAttribute('aria-expanded', 'false');
+                const p = q.nextElementSibling;
+                if (p) {
+                    p.style.maxHeight = null;
+                    p.setAttribute('aria-hidden', 'true');
+                }
+            }
+        });
+
+        // Toggle current question
+        if (!isActive) {
+            question.classList.add('active');
+            question.setAttribute('aria-expanded', 'true');
+            panel.style.maxHeight = panel.scrollHeight + 'px';
+            panel.setAttribute('aria-hidden', 'false');
+        } else {
+            question.classList.remove('active');
+            question.setAttribute('aria-expanded', 'false');
+            panel.style.maxHeight = null;
+            panel.setAttribute('aria-hidden', 'true');
+        }
+    }
+};
+
+// ========== 13. COUNTDOWN TIMER ==========
+const Countdown = {
+    init() {
+        this.display = utils.getElement('countdown');
+        if (!this.display) return;
+
+        const update = () => {
+            try {
+                const now = new Date();
+                const endOfDay = new Date();
+                endOfDay.setHours(23, 59, 59, 999);
+                const diff = Math.max(0, endOfDay - now);
+
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                this.display.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            } catch (error) {
+                console.error('Countdown error:', error);
+            }
+        };
+
+        setInterval(update, 1000);
+        update();
+    }
+};
+
+// ========== 14. SCROLL REVEAL ==========
+const ScrollReveal = {
+    init() {
+        // Intersection Observer for reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { 
+            threshold: 0.1, 
+            rootMargin: '0px 0px -50px 0px' 
+        });
+
+        // Observe all reveal elements
+        utils.queryAll('.reveal').forEach(el => observer.observe(el));
+
+        // Bento card mouse effect (desktop only)
+        if (!utils.isMobile()) {
+            utils.queryAll('.bento-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+                });
+            });
+        }
+    }
+};
+
+// ========== 15. MODAL MODULE ==========
+const Modals = {
+    activeModal: null,
+    
+    init() {
+        // Login/Signup modals
+        window.openLoginModal = () => this.open('login-modal');
+        window.closeLoginModal = () => this.close('login-modal');
+        window.closeSignupModal = () => this.close('signup-modal');
+
+        window.switchToSignup = () => {
+            this.close('login-modal');
+            this.open('signup-modal');
+        };
+
+        window.switchToLogin = () => {
+            this.close('signup-modal');
+            this.open('login-modal');
+        };
+
+        // Generic modals
+        const modalIds = [
+            'privacy-modal', 
+            'terms-modal', 
+            'about-modal', 
+            'story-modal', 
+            'roadmap-modal'
+        ];
+
+        modalIds.forEach(id => {
+            const cleanName = id.replace('-modal', '');
+            const camelCase = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+            
+            window[`open${camelCase}Modal`] = () => this.open(id);
+            window[`close${camelCase}Modal`] = () => this.close(id);
+        });
+
+        // Close on overlay click
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                this.close(e.target.id);
+            }
+        });
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.activeModal) {
+                this.close(this.activeModal.id);
+            }
+        });
+    },
+
+    open(id) {
+        const modal = utils.getElement(id);
+        if (!modal) return;
+
+        this.activeModal = modal;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        // Focus first focusable element
+        const firstFocusable = modal.querySelector('button, input, a, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable) {
+            setTimeout(() => firstFocusable.focus(), 100);
+        }
+    },
+
+    close(id) {
+        const modal = utils.getElement(id);
+        if (!modal) return;
+
+        modal.style.display = 'none';
+        
+        if (this.activeModal === modal) {
+            this.activeModal = null;
+        }
+        
+        // Restore body scroll if no other modals are open
+        const openModals = utils.queryAll('.modal-overlay[style*="flex"]');
+        if (openModals.length === 0) {
+            document.body.style.overflow = '';
+        }
+    }
+};
+
+// ========== 16. PROMO TEXT MODULE ==========
 const PromoText = {
     init() {
-        const promoEl = utils.getElement('promo-text');
-        if (!promoEl) return;
+        this.promoEl = utils.getElement('promo-text');
+        if (!this.promoEl) return;
 
         const month = new Date().getMonth();
-        const year = new Date().getFullYear();
 
         const promos = [
-            `🔥 NEW YEAR PROMO ${year}: 30% OFF – Ends at 11:59 Tonight! 💸`,
+            `🔥 NEW YEAR PROMO: 30% OFF – Ends at 11:59 Tonight! 💸`,
             `🚀 FEBRUARY BOOST: 30%+ OFF – Ends at 11:59 Tonight! 💸`,
             `💎 MARCH GROWTH: 30%+ OFF – Ends at 11:59 Tonight! 💸`,
             `⚡ SPRING SALE: 30%+ OFF – Ends at 11:59 Tonight! 💸`,
@@ -883,15 +1134,18 @@ const PromoText = {
             `🎄 XMAS PROTOCOL: 30%+ OFF – Ends at 11:59 Tonight! 💸`
         ];
 
-        promoEl.textContent = promos[month];
+        this.promoEl.textContent = promos[month];
     }
 };
 
-// ========== 18. MEGA MENU MODULE ==========
+// ========== 17. MEGA MENU MODULE ==========
 const MegaMenu = {
+    isOpen: false,
+    
     init() {
         this.menu = utils.getElement('academy-mega-menu');
         this.trigger = utils.getElement('academy-trigger');
+        this.triggerMobile = utils.getElement('academy-trigger-mobile');
         this.closeBtn = utils.getElement('mega-close-btn');
         this.overlay = utils.getElement('mega-overlay');
         this.grid = utils.getElement('mega-grid-target');
@@ -926,47 +1180,77 @@ const MegaMenu = {
     },
 
     setupEvents() {
+        // Desktop trigger
         this.trigger.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             this.toggle();
         });
 
+        // Mobile trigger
+        if (this.triggerMobile) {
+            this.triggerMobile.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggle();
+            });
+        }
+
+        // Close button
         this.closeBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
             this.close();
         });
 
+        // Overlay click
         this.overlay?.addEventListener('click', () => this.close());
 
+        // Outside click
         document.addEventListener('click', (e) => {
-            if (this.menu && !this.menu.contains(e.target) && e.target !== this.trigger && !this.trigger.contains(e.target)) {
+            if (this.isOpen && 
+                !this.menu.contains(e.target) && 
+                e.target !== this.trigger && 
+                e.target !== this.triggerMobile &&
+                !this.trigger.contains(e.target) &&
+                !(this.triggerMobile && this.triggerMobile.contains(e.target))) {
                 this.close();
             }
         });
 
-window.scrollToLibrary = () => {
-            // 1. Zamknij okienko Academy
+        // Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.close();
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', utils.debounce(() => {
+            if (utils.isDesktop() && this.isOpen) {
+                this.close();
+            }
+        }, 250));
+
+        // Global function for scrolling to library
+        window.scrollToLibrary = () => {
+            // Close mega menu
             this.close();
-
-            // 2. NOWOŚĆ: Zamknij też menu hamburgerowe (Solutions/Academy...)
-            const mobileBtn = document.querySelector('.mobile-menu-btn');
-            const navLinks = document.querySelector('.nav-links');
             
-            if (mobileBtn) mobileBtn.classList.remove('active');
-            if (navLinks) navLinks.classList.remove('active');
-
-            // 3. Odblokuj przewijanie strony
-            document.body.style.overflow = '';
-
-            // 4. Przewiń do sekcji Library
+            // Close mobile menu if open
+            if (window.MobileMenu && window.MobileMenu.isOpen) {
+                window.MobileMenu.close();
+            }
+            
+            // Scroll to library
             const lib = utils.getElement('library');
-            lib?.scrollIntoView({ behavior: 'smooth' });
+            if (lib) {
+                lib.scrollIntoView({ behavior: 'smooth' });
+            }
         };
     },
 
     toggle() {
-        if (this.menu.classList.contains('show')) {
+        if (this.isOpen) {
             this.close();
         } else {
             this.open();
@@ -974,20 +1258,34 @@ window.scrollToLibrary = () => {
     },
 
     open() {
-        // PRZYWRÓCONO ORYGINAŁ: Używamy 'block', żeby nie psuć układu ramki
-        this.menu.style.display = 'block'; 
-        
+        this.isOpen = true;
+        this.menu.style.display = 'block';
         this.overlay?.classList.add('show');
-        // Małe opóźnienie dla animacji CSS
-        setTimeout(() => this.menu.classList.add('show'), 10);
+        
+        // Animate in
+        setTimeout(() => {
+            this.menu.classList.add('show');
+        }, 10);
+        
+        // Update trigger states
         this.trigger.classList.add('active');
+        if (this.triggerMobile) {
+            this.triggerMobile.classList.add('active');
+        }
     },
 
     close() {
+        this.isOpen = false;
         this.menu.classList.remove('show');
         this.overlay?.classList.remove('show');
+        
+        // Update trigger states
         this.trigger.classList.remove('active');
-        // Czekamy aż animacja zanikania się skończy (400ms)
+        if (this.triggerMobile) {
+            this.triggerMobile.classList.remove('active');
+        }
+        
+        // Hide after animation
         setTimeout(() => {
             if (!this.menu.classList.contains('show')) {
                 this.menu.style.display = 'none';
@@ -996,7 +1294,7 @@ window.scrollToLibrary = () => {
     }
 };
 
-// ========== 19. EMAIL PROTECTION MODULE ==========
+// ========== 18. EMAIL PROTECTION MODULE ==========
 const EmailProtection = {
     init() {
         const user = 'contact';
@@ -1041,14 +1339,14 @@ const EmailProtection = {
             try {
                 const email = el.textContent.replace(' [at] ', '@');
                 if (email.includes('@')) {
-                    el.innerHTML = `<a href="mailto:${email}" style="color: inherit; text-decoration: none;">${email}</a>`;
+                    el.innerHTML = `<a href="mailto:${email}" style="color: inherit; text-decoration: none;" onclick="this.style.textDecoration='underline'" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${email}</a>`;
                 }
             } catch (error) {
                 console.error('Email protection error:', error);
             }
         });
 
-        // Effective dates
+        // Update effective dates
         this.updateEffectiveDates();
     },
 
@@ -1077,5 +1375,298 @@ const EmailProtection = {
     }
 };
 
+// ========== 19. TOUCH OPTIMIZATIONS ==========
+const TouchOptimizations = {
+    init() {
+        // Add touch classes for CSS targeting
+        if (utils.isTouch()) {
+            document.body.classList.add('touch-device');
+        }
+        
+        // Optimize hover states for touch
+        this.optimizeHovers();
+        
+        // Add touch feedback
+        this.addTouchFeedback();
+        
+        // Prevent zoom on double tap for iOS
+        this.preventDoubleTapZoom();
+        
+        // Optimize scroll performance
+        this.optimizeScroll();
+    },
+    
+    optimizeHovers() {
+        // Remove hover effects on touch devices
+        if (utils.isTouch()) {
+            const style = document.createElement('style');
+            style.textContent = `
+                .touch-device *:hover {
+                    transform: none !important;
+                }
+                .touch-device .bento-card:hover,
+                .touch-device .course-card:hover,
+                .touch-device .social-card:hover {
+                    transform: translateY(-2px) !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    },
+    
+    addTouchFeedback() {
+        // Add active states for buttons
+        const buttons = utils.queryAll('button, .btn, .btn-card, .filter-btn, .social-card, .mega-item, .faq-question');
+        
+        buttons.forEach(button => {
+            button.addEventListener('touchstart', () => {
+                button.style.transform = 'scale(0.98)';
+                button.style.transition = 'transform 0.1s ease';
+            }, { passive: true });
+            
+            button.addEventListener('touchend', () => {
+                setTimeout(() => {
+                    button.style.transform = '';
+                    button.style.transition = '';
+                }, 100);
+            }, { passive: true });
+        });
+    },
+    
+    preventDoubleTapZoom() {
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+    },
+    
+    optimizeScroll() {
+        // Add passive listeners for better scroll performance
+        document.addEventListener('touchmove', () => {}, { passive: true });
+        document.addEventListener('wheel', () => {}, { passive: true });
+    }
+};
+
+// ========== 20. ROI CALCULATOR MODULE ==========
+const ROICalculator = {
+    init() {
+        this.hoursSlider = utils.getElement('hours-slider');
+        this.rateSlider = utils.getElement('rate-slider');
+        this.hoursDisplay = utils.getElement('hours-display');
+        this.rateDisplay = utils.getElement('rate-display');
+        this.resultDisplay = utils.getElement('result-display');
+
+        if (!this.hoursSlider || !this.rateSlider) return;
+
+        this.setupSliders();
+        this.updateCalculation();
+    },
+
+    setupSliders() {
+        this.hoursSlider.addEventListener('input', () => {
+            this.updateCalculation();
+        });
+
+        this.rateSlider.addEventListener('input', () => {
+            this.updateCalculation();
+        });
+    },
+
+    updateCalculation() {
+        const hours = parseInt(this.hoursSlider.value);
+        const rate = parseInt(this.rateSlider.value);
+
+        // Update displays
+        this.hoursDisplay.textContent = hours;
+        this.rateDisplay.textContent = `$${rate}`;
+
+        // Calculate annual revenue
+        const monthlyRevenue = hours * rate;
+        const annualRevenue = monthlyRevenue * 12;
+
+        // Update result with animation
+        if (this.resultDisplay) {
+            this.animateValue(this.resultDisplay, annualRevenue);
+        }
+    },
+
+    animateValue(element, targetValue) {
+        const startValue = parseInt(element.textContent.replace(/[^0-9]/g, '')) || 0;
+        const duration = 1000;
+        const startTime = performance.now();
+
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
+            
+            element.textContent = `$${currentValue.toLocaleString()}`;
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        requestAnimationFrame(animate);
+    }
+};
+
+// ========== 21. PERFORMANCE MONITOR ==========
+const PerformanceMonitor = {
+    init() {
+        // Monitor Core Web Vitals
+        this.monitorWebVitals();
+        
+        // Monitor memory usage
+        this.monitorMemory();
+        
+        // Monitor FPS
+        this.monitorFPS();
+    },
+
+    monitorWebVitals() {
+        // LCP (Largest Contentful Paint)
+        new PerformanceObserver((entryList) => {
+            for (const entry of entryList.getEntries()) {
+                if (entry.startTime < 10000) { // First 10 seconds
+                    console.log('LCP:', entry.startTime);
+                }
+            }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+
+        // FID (First Input Delay)
+        new PerformanceObserver((entryList) => {
+            for (const entry of entryList.getEntries()) {
+                console.log('FID:', entry.processingStart - entry.startTime);
+            }
+        }).observe({ entryTypes: ['first-input'] });
+
+        // CLS (Cumulative Layout Shift)
+        let clsValue = 0;
+        new PerformanceObserver((entryList) => {
+            for (const entry of entryList.getEntries()) {
+                if (!entry.hadRecentInput) {
+                    clsValue += entry.value;
+                    console.log('CLS:', clsValue);
+                }
+            }
+        }).observe({ entryTypes: ['layout-shift'] });
+    },
+
+    monitorMemory() {
+        if ('memory' in performance) {
+            setInterval(() => {
+                const memory = performance.memory;
+                console.log('Memory Usage:', {
+                    used: Math.round(memory.usedJSHeapSize / 1048576) + ' MB',
+                    total: Math.round(memory.totalJSHeapSize / 1048576) + ' MB',
+                    limit: Math.round(memory.jsHeapSizeLimit / 1048576) + ' MB'
+                });
+            }, 30000); // Log every 30 seconds
+        }
+    },
+
+    monitorFPS() {
+        let lastTime = performance.now();
+        let frames = 0;
+
+        function countFrames() {
+            frames++;
+            const currentTime = performance.now();
+
+            if (currentTime >= lastTime + 1000) {
+                console.log('FPS:', frames);
+                frames = 0;
+                lastTime = currentTime;
+            }
+
+            requestAnimationFrame(countFrames);
+        }
+
+        requestAnimationFrame(countFrames);
+    }
+};
+
+// ========== GLOBAL FUNCTIONS ==========
+
+// Smooth scroll to element
+window.smoothScrollTo = (element, offset = 0) => {
+    if (element) {
+        const targetPosition = element.offsetTop - offset;
+        window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+        });
+    }
+};
+
+// Check if element is in viewport
+window.isInViewport = (element) => {
+    if (!element) return false;
+    const rect = element.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+};
+
+// Debounced resize handler
+window.addEventListener('resize', utils.debounce(() => {
+    // Trigger custom resize event
+    window.dispatchEvent(new CustomEvent('optimizedResize'));
+}, 250));
+
+// ========== ERROR HANDLING ==========
+window.addEventListener('error', (e) => {
+    console.error('JavaScript Error:', e.error);
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    console.error('Unhandled Promise Rejection:', e.reason);
+});
+
+// ========== PERFORMANCE MONITORING ==========
+if ('performance' in window) {
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const perfData = performance.getEntriesByType('navigation')[0];
+            console.log('Page Load Time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+        }, 0);
+    });
+}
+
 // ========== END OF SCRIPT ==========
 console.log('✅ Pylon Vision Enhanced Script Loaded Successfully');
+
+// Export for debugging
+window.PylonVision = {
+    utils,
+    MobileMenu,
+    CookieBanner,
+    NavbarScroll,
+    ProofPulse,
+    ROICalculator,
+    CourseLibrary,
+    FAQ,
+    Modals,
+    Dashboard,
+    PromoText,
+    MegaMenu,
+    EmailProtection,
+    ScrollReveal,
+    Constellation,
+    Ticker,
+    Countdown,
+    SubBanner,
+    TouchOptimizations,
+    PerformanceMonitor
+};
