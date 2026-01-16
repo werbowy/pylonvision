@@ -148,11 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========== 3. MOBILE MENU MODULE ==========
 const MobileMenu = {
     isOpen: false,
-    
+
     init() {
         this.btn = utils.query('.mobile-menu-btn');
         this.menu = utils.query('.nav-links-mobile');
-        
+
         if (!this.btn || !this.menu) return;
 
         // Toggle menu
@@ -169,7 +169,7 @@ const MobileMenu = {
                 if (link.id === 'academy-trigger-mobile') {
                     return;
                 }
-                
+
                 // Close menu for other links
                 this.close();
             });
@@ -213,13 +213,13 @@ const MobileMenu = {
         this.btn.classList.add('active');
         this.btn.setAttribute('aria-expanded', 'true');
         this.menu.classList.add('active');
-        
+
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
-        
+
         // Add backdrop
         this.addBackdrop();
-        
+
         // Focus first link for accessibility
         const firstLink = this.menu.querySelector('a');
         if (firstLink) {
@@ -232,19 +232,19 @@ const MobileMenu = {
         this.btn.classList.remove('active');
         this.btn.setAttribute('aria-expanded', 'false');
         this.menu.classList.remove('active');
-        
+
         // Restore body scroll
         document.body.style.overflow = '';
-        
+
         // Remove backdrop
         this.removeBackdrop();
-        
+
         // Also close mega menu if open
         if (window.MegaMenu && window.MegaMenu.isOpen) {
             window.MegaMenu.close();
         }
     },
-    
+
     addBackdrop() {
         let backdrop = utils.query('.menu-backdrop');
         if (!backdrop) {
@@ -264,18 +264,18 @@ const MobileMenu = {
             `;
             document.body.appendChild(backdrop);
         }
-        
+
         // Animate in
         requestAnimationFrame(() => {
             backdrop.style.opacity = '1';
         });
-        
+
         // Close on backdrop click
         backdrop.addEventListener('click', () => {
             this.close();
         });
     },
-    
+
     removeBackdrop() {
         const backdrop = utils.query('.menu-backdrop');
         if (backdrop) {
@@ -324,7 +324,7 @@ const NavbarScroll = {
     init() {
         this.navbar = utils.query('.navbar');
         this.progress = utils.getElement('scroll-progress');
-        
+
         if (!this.navbar) return;
 
         const handleScroll = utils.throttle(() => {
@@ -342,7 +342,7 @@ const NavbarScroll = {
         }, 100);
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        
+
         // Initial call
         handleScroll();
     }
@@ -421,7 +421,7 @@ const Ticker = {
             this.ticker.addEventListener('mouseenter', () => {
                 this.ticker.classList.add('paused');
             });
-            
+
             this.ticker.addEventListener('mouseleave', () => {
                 this.ticker.classList.remove('paused');
             });
@@ -444,14 +444,14 @@ const CourseLibrary = {
     ],
 
     stats: {
-        1: { rating: 4.9, reviews: 28, oldPrice: 80, badgeType: 'USER_FAV' },
+        1: { rating: 4.9, reviews: 54, oldPrice: 97, badgeType: 'BESTSELLER' },
         2: { rating: "5.0", reviews: 7, oldPrice: 155, badgeType: 'ELITE_PICK' },
-        3: { rating: 4.7, reviews: 14, oldPrice: 50, badgeType: 'NONE' },
-        4: { rating: 4.8, reviews: 9, oldPrice: 125, badgeType: 'NONE' },
-        5: { rating: 4.6, reviews: 32, oldPrice: 65, badgeType: 'TRENDING' },
+        3: { rating: 4.8, reviews: 14, oldPrice: 50, badgeType: 'NONE' },
+        4: { rating: 4.9, reviews: 9, oldPrice: 125, badgeType: 'NONE' },
+        5: { rating: 4.8, reviews: 32, oldPrice: 65, badgeType: 'TRENDING' },
         6: { rating: 4.8, reviews: 21, oldPrice: 80, badgeType: 'NONE' },
         7: { rating: 4.9, reviews: 5, oldPrice: 155, badgeType: 'TOP_RATED' },
-        8: { rating: 4.7, reviews: 54, oldPrice: 36, badgeType: 'BESTSELLER' },
+        8: { rating: 4.8, reviews: 28, oldPrice: 36, badgeType: 'USER_FAV' },
         9: { rating: "5.0", reviews: 3, oldPrice: 302, badgeType: 'ELITE_PICK' }
     },
 
@@ -472,14 +472,14 @@ const CourseLibrary = {
             btn.addEventListener('click', (e) => {
                 // Don't trigger if already active
                 if (btn.classList.contains('active')) return;
-                
+
                 // Update active state
                 this.filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
+
                 // Filter courses
                 this.filterCourses();
-                
+
                 // Close mobile menu if open
                 if (window.MobileMenu && window.MobileMenu.isOpen) {
                     window.MobileMenu.close();
@@ -490,11 +490,11 @@ const CourseLibrary = {
 
     setupSearch() {
         if (!this.searchInput) return;
-        
+
         this.searchInput.addEventListener('input', utils.debounce(() => {
             this.filterCourses();
         }, 300));
-        
+
         // Clear search on escape
         this.searchInput.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -522,10 +522,10 @@ const CourseLibrary = {
 
     render(data) {
         if (!this.grid) return;
-        
+
         // Clear existing content
         this.grid.innerHTML = '';
-        
+
         // Show no results message if empty
         if (data.length === 0) {
             this.grid.innerHTML = `
@@ -557,7 +557,7 @@ const CourseLibrary = {
                 </div>
                 <div class="card-content">
                     <h3 class="card-title" style="margin-bottom:5px; font-size: 1.25rem;">${course.title}</h3>
-                    
+
                     <div style="font-size: 0.8rem; color: #FBBF24; margin-bottom: 12px; display: flex; align-items: center; gap: 5px;">
                         <div style="display:flex; gap:1px;">${this.getStarsHTML(stats.rating)}</div>
                         <span style="color: var(--text-muted); font-weight: 500; margin-left: 4px;">${stats.rating} (${stats.reviews} Ratings)</span>
@@ -568,9 +568,9 @@ const CourseLibrary = {
                     </div>
 
                     <p class="card-desc">${course.desc}</p>
-                    
+
                     <div class="card-footer" style="display: flex; flex-direction: column; gap: 15px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        
+
                         <div class="price-box" style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <div>
                                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
@@ -579,15 +579,15 @@ const CourseLibrary = {
                                 </div>
                                 <span class="card-price" style="font-size: 1.5rem; font-weight: 700; color: #fff;">${course.price}</span>
                             </div>
-                            
+
                             <div style="font-size: 0.65rem; color: #9CA3AF; margin-bottom: 6px; display:flex; align-items:center; gap:4px;">
                                 <i class="fa-solid fa-shield-halved"></i> 30-Day Guarantee
                             </div>
                         </div>
-                        
+
                         <div style="width: 100%; text-align: center;">
                             <a href="${course.url}" class="btn-card" style="display: block; width: 100%; text-align: center; padding: 12px 0;">Get Access</a>
-                            
+
                             <span style="font-size: 0.65rem; color: #A78BFA; font-weight:600; display: block; margin-top: 8px;">
                                 <i class="fa-solid fa-bolt"></i> Instant Access
                             </span>
@@ -614,7 +614,7 @@ const CourseLibrary = {
 
     getBadgeHTML(type) {
         const badges = {
-            'USER_FAV': '<div class="bestseller-ribbon" style="background: linear-gradient(135deg, #e5e7eb 0%, #9ca3af 50%, #d1d5db 100%); color: #111827;"><i class="fa-solid fa-gem" style="margin-right: 4px;"></i> LIMITED DROP</div>',
+            'USER_FAV': '<div class="bestseller-ribbon" style="background: linear-gradient(135deg, #e5e7eb 0%, #9ca3af 50%, #d1d5db 100%); color: #111827;"><i class="fa-solid fa-gem" style="margin-right: 4px;"></i> Popular</div>',
             'BESTSELLER': '<div class="bestseller-ribbon" style="background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%); text-shadow: 0 1px 2px rgba(0,0,0,0.3);"><i class="fa-solid fa-crown"></i> Bestseller</div>',
             'ELITE_PICK': '<div class="bestseller-ribbon" style="background: linear-gradient(135deg, #8B5CF6, #D946EF);"><i class="fa-solid fa-crown"></i> Elite Pick</div>',
             'TRENDING': '<div class="bestseller-ribbon" style="background: linear-gradient(135deg, #10B981, #059669);"><i class="fa-solid fa-arrow-trend-up"></i> Trending</div>',
@@ -714,11 +714,11 @@ const ProofPulse = {
             }
 
             this.pulse.classList.add('visible');
-            
+
             // Auto-hide after 6 seconds
             setTimeout(() => {
                 this.pulse.classList.remove('visible');
-                
+
                 // Schedule next show
                 const nextInterval = Math.random() * 16000 + 8000;
                 setTimeout(() => this.show(), nextInterval);
@@ -898,10 +898,10 @@ const Dashboard = {
                 div.className = 'log-line';
                 div.textContent = "> " + logLines[lineIdx];
                 logContainer.appendChild(div);
-                
+
                 // Scroll to bottom
                 logContainer.scrollTop = logContainer.scrollHeight;
-                
+
                 lineIdx++;
                 setTimeout(addLog, 800);
             }
@@ -921,7 +921,7 @@ const FAQ = {
             question.addEventListener('click', () => {
                 this.toggle(question);
             });
-            
+
             // Handle keyboard navigation
             question.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -935,7 +935,7 @@ const FAQ = {
     toggle(question) {
         const isActive = question.classList.contains('active');
         const panel = question.nextElementSibling;
-        
+
         if (!panel) return;
 
         // Close all other questions
@@ -1029,7 +1029,7 @@ const ScrollReveal = {
 // ========== 15. MODAL MODULE ==========
 const Modals = {
     activeModal: null,
-    
+
     init() {
         // Login/Signup modals
         window.openLoginModal = () => this.open('login-modal');
@@ -1058,7 +1058,7 @@ const Modals = {
         modalIds.forEach(id => {
             const cleanName = id.replace('-modal', '');
             const camelCase = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-            
+
             window[`open${camelCase}Modal`] = () => this.open(id);
             window[`close${camelCase}Modal`] = () => this.close(id);
         });
@@ -1085,7 +1085,7 @@ const Modals = {
         this.activeModal = modal;
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        
+
         // Focus first focusable element
         const firstFocusable = modal.querySelector('button, input, a, [tabindex]:not([tabindex="-1"])');
         if (firstFocusable) {
@@ -1098,11 +1098,11 @@ const Modals = {
         if (!modal) return;
 
         modal.style.display = 'none';
-        
+
         if (this.activeModal === modal) {
             this.activeModal = null;
         }
-        
+
         // Restore body scroll if no other modals are open
         const openModals = utils.queryAll('.modal-overlay[style*="flex"]');
         if (openModals.length === 0) {
@@ -1141,7 +1141,7 @@ const PromoText = {
 // ========== 17. MEGA MENU MODULE ==========
 const MegaMenu = {
     isOpen: false,
-    
+
     init() {
         this.menu = utils.getElement('academy-mega-menu');
         this.trigger = utils.getElement('academy-trigger');
@@ -1235,12 +1235,12 @@ const MegaMenu = {
         window.scrollToLibrary = () => {
             // Close mega menu
             this.close();
-            
+
             // Close mobile menu if open
             if (window.MobileMenu && window.MobileMenu.isOpen) {
                 window.MobileMenu.close();
             }
-            
+
             // Scroll to library
             const lib = utils.getElement('library');
             if (lib) {
@@ -1261,12 +1261,12 @@ const MegaMenu = {
         this.isOpen = true;
         this.menu.style.display = 'block';
         this.overlay?.classList.add('show');
-        
+
         // Animate in
         setTimeout(() => {
             this.menu.classList.add('show');
         }, 10);
-        
+
         // Update trigger states
         this.trigger.classList.add('active');
         if (this.triggerMobile) {
@@ -1278,13 +1278,13 @@ const MegaMenu = {
         this.isOpen = false;
         this.menu.classList.remove('show');
         this.overlay?.classList.remove('show');
-        
+
         // Update trigger states
         this.trigger.classList.remove('active');
         if (this.triggerMobile) {
             this.triggerMobile.classList.remove('active');
         }
-        
+
         // Hide after animation
         setTimeout(() => {
             if (!this.menu.classList.contains('show')) {
@@ -1382,20 +1382,20 @@ const TouchOptimizations = {
         if (utils.isTouch()) {
             document.body.classList.add('touch-device');
         }
-        
+
         // Optimize hover states for touch
         this.optimizeHovers();
-        
+
         // Add touch feedback
         this.addTouchFeedback();
-        
+
         // Prevent zoom on double tap for iOS
         this.preventDoubleTapZoom();
-        
+
         // Optimize scroll performance
         this.optimizeScroll();
     },
-    
+
     optimizeHovers() {
         // Remove hover effects on touch devices
         if (utils.isTouch()) {
@@ -1413,17 +1413,17 @@ const TouchOptimizations = {
             document.head.appendChild(style);
         }
     },
-    
+
     addTouchFeedback() {
         // Add active states for buttons
         const buttons = utils.queryAll('button, .btn, .btn-card, .filter-btn, .social-card, .mega-item, .faq-question');
-        
+
         buttons.forEach(button => {
             button.addEventListener('touchstart', () => {
                 button.style.transform = 'scale(0.98)';
                 button.style.transition = 'transform 0.1s ease';
             }, { passive: true });
-            
+
             button.addEventListener('touchend', () => {
                 setTimeout(() => {
                     button.style.transform = '';
@@ -1432,7 +1432,7 @@ const TouchOptimizations = {
             }, { passive: true });
         });
     },
-    
+
     preventDoubleTapZoom() {
         let lastTouchEnd = 0;
         document.addEventListener('touchend', (e) => {
@@ -1443,7 +1443,7 @@ const TouchOptimizations = {
             lastTouchEnd = now;
         }, { passive: false });
     },
-    
+
     optimizeScroll() {
         // Add passive listeners for better scroll performance
         document.addEventListener('touchmove', () => {}, { passive: true });
@@ -1502,11 +1502,11 @@ const ROICalculator = {
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            
+
             // Easing function
             const easeOut = 1 - Math.pow(1 - progress, 3);
             const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
-            
+
             element.textContent = `$${currentValue.toLocaleString()}`;
 
             if (progress < 1) {
@@ -1523,10 +1523,10 @@ const PerformanceMonitor = {
     init() {
         // Monitor Core Web Vitals
         this.monitorWebVitals();
-        
+
         // Monitor memory usage
         this.monitorMemory();
-        
+
         // Monitor FPS
         this.monitorFPS();
     },
@@ -1645,7 +1645,7 @@ if ('performance' in window) {
 }
 
 // ========== END OF SCRIPT ==========
-console.log('✅ Pylon Vision Enhanced Script Loaded Successfully');
+console.log(' Pylon Vision Enhanced Script Loaded Successfully');
 
 // Export for debugging
 window.PylonVision = {
@@ -1670,3 +1670,130 @@ window.PylonVision = {
     TouchOptimizations,
     PerformanceMonitor
 };
+
+/* ==========================================
+   SIMPLE CHAT - "HOW CAN WE HELP" LOGIC
+   ========================================== */
+const SimpleChat = {
+    isOpen: false,
+    hasGreeted: false,
+
+    // --- KONFIGURACJA MAILA (ZABEZPIECZONA) ---
+    m_u: "admin",
+    m_d: "pylonvision.com",
+
+    init() {
+        setTimeout(() => {
+            if (!this.isOpen && !this.hasGreeted) {
+                this.addBotMsg("👋 Hi there! How can we help you today?");
+                this.hasGreeted = true;
+                
+                const trigger = document.getElementById('chat-trigger');
+                if(trigger) {
+                    trigger.style.transform = 'scale(1.1)';
+                    setTimeout(() => trigger.style.transform = 'scale(1)', 200);
+                }
+            }
+        }, 3000);
+    },
+
+    toggle() {
+        const win = document.getElementById('chat-window');
+        this.isOpen = !this.isOpen;
+        if(this.isOpen) {
+            win.classList.add('active');
+            if (!this.hasGreeted) {
+                this.addBotMsg("👋 Hi there! How can we help you today?");
+                this.hasGreeted = true;
+            }
+            // Autofocus na input przy otwarciu
+            setTimeout(() => document.getElementById('simple-input').focus(), 300);
+        } else {
+            win.classList.remove('active');
+        }
+    },
+
+    ask(question) { 
+        this.addUserMsg(question); 
+        this.showTyping(); 
+        setTimeout(() => { 
+            this.removeTyping(); 
+            this.processResponse(question); 
+        }, 1000); 
+    },
+
+    handleKey(e) { 
+        if(e.key === 'Enter') this.send(); 
+    },
+
+    send() { 
+        const i = document.getElementById('simple-input'); 
+        const t = i.value.trim(); 
+        if(!t) return; 
+        this.addUserMsg(t); 
+        i.value=''; 
+        this.showTyping(); 
+        setTimeout(() => {
+            this.removeTyping();
+            this.processResponse(t);
+        }, 1500); 
+    },
+
+    addUserMsg(t) { 
+        const d = document.createElement('div');
+        d.className = 'msg-bubble user';
+        d.textContent = t;
+        this.app(d); 
+    },
+
+    addBotMsg(h) { 
+        const d = document.createElement('div');
+        d.className = 'msg-bubble bot';
+        d.innerHTML = h;
+        this.app(d); 
+    },
+
+    app(d) { 
+        const b = document.getElementById('chat-body-simple');
+        b.appendChild(d);
+        b.scrollTop = b.scrollHeight; 
+    },
+
+    showTyping() { 
+        const d = document.createElement('div');
+        d.className = 'typing-simple';
+        d.id = 'ti';
+        d.innerHTML = '<div class="dot-s"></div><div class="dot-s"></div><div class="dot-s"></div>';
+        this.app(d); 
+    },
+
+    removeTyping() { 
+        const e = document.getElementById('ti');
+        if(e) e.remove(); 
+    },
+
+    processResponse(input) {
+        const lower = input.toLowerCase();
+        let reply = "";
+        
+        // Dynamiczne składanie maila (ukryte przed botami)
+        const mail = this.m_u + "@" + this.m_d;
+
+        if (lower.includes('price') || lower.includes('pricing')) {
+            reply = "We offer a simple <strong>Founder's Rate ($49/mo)</strong>. This gives you full access to all scripts and updates.";
+        } 
+        else if (lower.includes('service') || lower.includes('start')) {
+            reply = "We help you automate repetitive tasks. You can download our plug-and-play scripts immediately after joining.";
+        }
+        else if (lower.includes('support') || lower.includes('help')) {
+            reply = "Describe your issue here, or email us directly at <strong>" + mail + "</strong> for priority assistance.";
+        }
+        else {
+            reply = "Thanks for the message! <br><br>Our team usually replies within a few hours via email. Please make sure to contact us at: <a href='mailto:" + mail + "' style='color:#A78BFA; text-decoration:underline;'>" + mail + "</a>";
+        }
+
+        this.addBotMsg(reply);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => SimpleChat.init());
